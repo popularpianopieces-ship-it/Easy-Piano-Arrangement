@@ -20,7 +20,7 @@
         </div>
         <div>
           <h1 class="text-2xl font-bold tracking-tight text-white">Piano Sheet Music</h1>
-          <p class="text-xs text-slate-400">Popular Piano Pieces Easy Collection</p>
+          <p class="text-xs text-slate-400">Personal Google Drive Sheet Music Collection</p>
         </div>
       </div>
 
@@ -54,7 +54,7 @@
     <!-- Status / Loading Indicator -->
     <div id="statusMessage" class="flex flex-col items-center justify-center py-20 text-center">
       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500 mb-4"></div>
-      <p class="text-slate-400 text-sm">Loading piano sheets from Google Drive...</p>
+      <p class="text-slate-400 text-sm">Loading piano sheets...</p>
     </div>
 
     <!-- Sheet Music Grid -->
@@ -113,20 +113,19 @@
     const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
     
     // REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL FROM CODE.GS
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxB7c5V1fUqVhB0kBfj9A53MpJ3cpU5m6Uo9Yu2oXPlRg9QAbnDx49IwjMKfYpXwPTQ/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgWvlVdIT1QYyB07e4D8JvQ1MR73iVCQqES1XNkGMI6ibtw4b4jPx_vQuMm8KcXU2n/exec";
     // ============================================================
 
     let allFiles = [];
     let isSubscriber = false;
 
-    // Pre-warm the Google Apps Script server in the background
+    // Pre-warm Apps Script server in background
     function warmUpAppsScript() {
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwgWvlVdIT1QYyB07e4D8JvQ1MR73iVCQqES1XNkGMI6ibtw4b4jPx_vQuMm8KcXU2n/exec") {
         fetch(`${APPS_SCRIPT_URL}?email=ping`).catch(() => {});
       }
     }
 
-    // Verify Email with Google Apps Script Backend
     async function verifySubscriberEmail(email, isAutoLogin = false) {
       const errorDiv = document.getElementById('loginError');
       const submitBtn = document.getElementById('verifySubmitBtn');
@@ -198,14 +197,14 @@
       }
     }
 
-    // Deep Scan for Google Drive files & subfolders
+    // Deep Scan for Google Drive files & progressive rendering
     async function scanFolderDeep(folderId) {
       let results = [];
       let pageToken = null;
 
       do {
         let query = `'${folderId}' in parents and trashed = false`;
-        let url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&pageSize=100&fields=nextPageToken,files(id,name,webViewLink,mimeType)&key=${API_KEY}`;
+        let url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&pageSize=100&fields=nextPageToken,files(id,name,webViewLink,mimeType,thumbnailLink)&key=${API_KEY}`;
         
         if (pageToken) url += `&pageToken=${pageToken}`;
 
@@ -225,6 +224,14 @@
           }
         }
         pageToken = data.nextPageToken;
+
+        // Progressively display initial results immediately
+        if (allFiles.length === 0 && results.length > 0) {
+          allFiles = [...results];
+          document.getElementById('statusMessage').classList.add('hidden');
+          document.getElementById('sheetsGrid').classList.remove('hidden');
+          renderSheets(allFiles);
+        }
       } while (pageToken);
 
       return results;
@@ -258,7 +265,6 @@
       }
     }
 
-    // Helper to get currently filtered files
     function getFilteredFiles() {
       const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
       if (!searchTerm) return allFiles;
@@ -274,33 +280,58 @@
 
       filesToRender.forEach((file) => {
         const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
-        
-        // Find index of file in original master list
         const originalIndex = allFiles.findIndex(f => f.id === file.id);
 
-        // ACCESS LOGIC:
-        // 1. Verified subscriber -> ALLOW EVERYTHING.
-        // 2. Guest AND currently searching -> DISABLE ALL SEARCH RESULTS.
-        // 3. Guest AND not searching -> ALLOW ONLY ORIGINAL FIRST 5 FILES (indices 0..4).
         const isAllowed = isSubscriber || (!isSearching && originalIndex >= 0 && originalIndex < 5);
 
+        // Optimized thumbnail size =s400 (loads much faster than =s800)
+        const previewUrl = file.thumbnailLink 
+          ? file.thumbnailLink.replace(/=s\d+$/, '=s400') 
+          : null;
+
         const card = document.createElement('div');
-        card.className = "bg-slate-800/60 border border-slate-700/60 rounded-xl p-5 flex flex-col justify-between transition-all shadow-lg group " + (isAllowed ? "hover:border-slate-600 hover:-translate-y-1" : "opacity-75");
+        card.className = "bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 flex flex-col justify-between transition-all shadow-lg group " + (isAllowed ? "hover:border-slate-600 hover:-translate-y-1" : "opacity-90");
 
         card.innerHTML = `
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-10 h-10 rounded-lg ${isAllowed ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' : 'bg-slate-700/30 border-slate-700 text-slate-500'} border flex items-center justify-center">
-                <i data-lucide="${isAllowed ? 'file-text' : 'lock'}" class="w-5 h-5"></i>
+            <!-- Page 1 Image Preview Container -->
+            <div class="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-slate-900 mb-4 border border-slate-700/50 shadow-inner group">
+              ${previewUrl ? `
+                <img 
+                  src="${previewUrl}" 
+                  alt="${cleanTitle} - Page 1 Preview" 
+                  class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300 bg-slate-800"
+                  loading="lazy"
+                  onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex flex-col items-center justify-center text-slate-500 p-4\'><i data-lucide=\'file-text\' class=\'w-10 h-10 mb-2 stroke-1\'></i><span class=\'text-xs\'>Sheet Preview</span></div>'; lucide.createIcons();"
+                />
+              ` : `
+                <div class="w-full h-full flex flex-col items-center justify-center text-slate-500 p-4">
+                  <i data-lucide="file-text" class="w-10 h-10 mb-2 stroke-1"></i>
+                  <span class="text-xs">Sheet Preview</span>
+                </div>
+              `}
+
+              <!-- Badge Overlay -->
+              <div class="absolute top-2 right-2">
+                ${!isAllowed ? `
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-amber-500/90 text-slate-950 backdrop-blur rounded-md shadow-md flex items-center gap-1">
+                    <i data-lucide="lock" class="w-3 h-3"></i> Locked
+                  </span>
+                ` : `
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-emerald-500/90 text-slate-950 backdrop-blur rounded-md shadow-md flex items-center gap-1">
+                    <i data-lucide="unlock" class="w-3 h-3"></i> Unlocked
+                  </span>
+                `}
               </div>
-              ${!isAllowed ? '<span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">Subscriber Only</span>' : ''}
             </div>
 
+            <!-- Title -->
             <h2 class="font-semibold text-slate-100 text-base leading-snug line-clamp-2 mb-4" title="${file.name}">
               ${cleanTitle}
             </h2>
           </div>
           
+          <!-- Action Button -->
           ${isAllowed ? `
             <a 
               href="${file.webViewLink}" 
@@ -308,7 +339,7 @@
               rel="noopener noreferrer"
               class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-md shadow-indigo-600/20"
             >
-              <span>View / Download</span>
+              <span>View Full PDF</span>
               <i data-lucide="external-link" class="w-4 h-4"></i>
             </a>
           ` : `
@@ -331,7 +362,7 @@
     // Modal Handlers
     function openModal() {
       document.getElementById('loginModal').classList.remove('hidden');
-      warmUpAppsScript(); // Pre-warm Apps Script server immediately on click
+      warmUpAppsScript();
       document.getElementById('emailInput').focus();
     }
 
@@ -355,10 +386,8 @@
       renderSheets(getFilteredFiles());
     }
 
-    // Pre-warm server when focus shifts to input
     document.getElementById('emailInput').addEventListener('focus', warmUpAppsScript, { once: true });
 
-    // Search filter
     document.getElementById('searchInput').addEventListener('input', () => {
       renderSheets(getFilteredFiles());
     });
