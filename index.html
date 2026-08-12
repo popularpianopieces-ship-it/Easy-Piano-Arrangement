@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Piano Sheet Music Library</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
+
+  <!-- Navigation / Header -->
+  <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+          <i data-lucide="music" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight text-white">Piano Sheet Music</h1>
+          <p class="text-xs text-slate-400">Popular Piano Pieces Easy Collection</p>
+        </div>
+      </div>
+
+      <!-- Right Header Actions: Status Badge & Search -->
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+        
+        <!-- User Status Badge -->
+        <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium">
+          <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
+          <span id="userStatusText" class="text-slate-300">Guest (5 Free Downloads)</span>
+          <button id="loginBtn" onclick="openModal()" class="ml-2 text-indigo-400 hover:text-indigo-300 underline font-semibold">Log In</button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative w-48 md:w-64">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search sheets..." 
+            class="w-full bg-slate-800 text-slate-200 placeholder-slate-400 text-sm rounded-lg pl-9 pr-4 py-1.5 border border-slate-700 focus:outline-none focus:border-indigo-500 transition-colors"
+          />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    
+    <!-- Status / Loading Indicator -->
+    <div id="statusMessage" class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500 mb-4"></div>
+      <p class="text-slate-400 text-sm">Loading piano sheets from Google Drive...</p>
+    </div>
+
+    <!-- Sheet Music Grid -->
+    <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden">
+      <!-- Cards rendered dynamically -->
+    </div>
+  </main>
+
+  <!-- Subscriber Login Modal -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 bg-indigo-600/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-indigo-500/30">
+          <i data-lucide="user-check" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Subscriber Login</h3>
+        <p class="text-xs text-slate-400 mt-1">Enter your subscriber email to unlock all sheet music downloads.</p>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email Address</label>
+          <input 
+            type="email" 
+            id="emailInput" 
+            required 
+            placeholder="subscriber@example.com"
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+          />
+        </div>
+
+        <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 border border-red-500/20 p-2.5 rounded-lg">
+          Email not found in subscriber list.
+        </div>
+
+        <button 
+          type="submit" 
+          id="verifySubmitBtn"
+          class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2"
+        >
+          <span>Verify Email</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // YOUR CONFIGURATION KEYS
+    // ============================================================
+    const API_KEY = "AIzaSyBybDa4zqq5ReVVvU3jp9saRO8rC_hSDDc";
+    const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
+    
+    // REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL FROM CODE.GS
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxB7c5V1fUqVhB0kBfj9A53MpJ3cpU5m6Uo9Yu2oXPlRg9QAbnDx49IwjMKfYpXwPTQ/exec";
+    // ============================================================
+
+    let allFiles = [];
+    let isSubscriber = false;
+
+    // Pre-warm the Google Apps Script server in the background
+    function warmUpAppsScript() {
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
+        fetch(`${APPS_SCRIPT_URL}?email=ping`).catch(() => {});
+      }
+    }
+
+    // Verify Email with Google Apps Script Backend
+    async function verifySubscriberEmail(email, isAutoLogin = false) {
+      const errorDiv = document.getElementById('loginError');
+      const submitBtn = document.getElementById('verifySubmitBtn');
+      errorDiv.classList.add('hidden');
+
+      if (!isAutoLogin && submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          <span>Verifying...</span>
+        `;
+      }
+
+      try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?email=${encodeURIComponent(email)}`);
+        const data = await response.json();
+
+        if (data.isSubscriber) {
+          isSubscriber = true;
+          localStorage.setItem('user_subscriber_email', email);
+          updateStatusUI(email);
+          if (!isAutoLogin) closeModal();
+          renderSheets(getFilteredFiles());
+        } else {
+          if (!isAutoLogin) {
+            errorDiv.classList.remove('hidden');
+          } else {
+            localStorage.removeItem('user_subscriber_email');
+          }
+        }
+      } catch (err) {
+        console.error("Error verifying email:", err);
+        if (!isAutoLogin) {
+          errorDiv.innerText = "Verification failed. Check Web App URL.";
+          errorDiv.classList.remove('hidden');
+        }
+      } finally {
+        if (!isAutoLogin && submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>Verify Email</span>`;
+        }
+      }
+    }
+
+    function checkSavedLogin() {
+      const savedEmail = localStorage.getItem('user_subscriber_email');
+      if (savedEmail) {
+        verifySubscriberEmail(savedEmail, true);
+      }
+    }
+
+    function updateStatusUI(email) {
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('userStatusText');
+      const loginBtn = document.getElementById('loginBtn');
+
+      if (isSubscriber) {
+        statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50";
+        statusText.innerText = `Subscriber (${email})`;
+        statusText.className = "text-emerald-400 font-semibold";
+        loginBtn.innerText = "Log Out";
+        loginBtn.onclick = handleLogout;
+      } else {
+        statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+        statusText.innerText = "Guest (5 Free Downloads)";
+        statusText.className = "text-slate-300";
+        loginBtn.innerText = "Log In";
+        loginBtn.onclick = openModal;
+      }
+    }
+
+    // Deep Scan for Google Drive files & subfolders
+    async function scanFolderDeep(folderId) {
+      let results = [];
+      let pageToken = null;
+
+      do {
+        let query = `'${folderId}' in parents and trashed = false`;
+        let url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&pageSize=100&fields=nextPageToken,files(id,name,webViewLink,mimeType)&key=${API_KEY}`;
+        
+        if (pageToken) url += `&pageToken=${pageToken}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) throw new Error(data.error.message);
+
+        const items = data.files || [];
+
+        for (const item of items) {
+          if (item.mimeType === 'application/vnd.google-apps.folder') {
+            const subFiles = await scanFolderDeep(item.id);
+            results = results.concat(subFiles);
+          } else {
+            results.push(item);
+          }
+        }
+        pageToken = data.nextPageToken;
+      } while (pageToken);
+
+      return results;
+    }
+
+    async function init() {
+      checkSavedLogin();
+
+      const statusMessage = document.getElementById('statusMessage');
+      const sheetsGrid = document.getElementById('sheetsGrid');
+
+      try {
+        allFiles = await scanFolderDeep(FOLDER_ID);
+
+        if (allFiles.length === 0) {
+          statusMessage.innerHTML = `<p class="text-slate-400">No sheet music files found.</p>`;
+          return;
+        }
+
+        statusMessage.classList.add('hidden');
+        sheetsGrid.classList.remove('hidden');
+        renderSheets(allFiles);
+
+      } catch (error) {
+        statusMessage.innerHTML = `
+          <div class="bg-red-500/10 text-red-400 border border-red-500/30 p-4 rounded-xl max-w-md text-left">
+            <p class="text-sm font-semibold">Error loading files:</p>
+            <p class="text-xs mt-1 text-slate-300">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Helper to get currently filtered files
+    function getFilteredFiles() {
+      const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!searchTerm) return allFiles;
+      return allFiles.filter(file => file.name.toLowerCase().includes(searchTerm));
+    }
+
+    function renderSheets(filesToRender) {
+      const sheetsGrid = document.getElementById('sheetsGrid');
+      sheetsGrid.innerHTML = '';
+
+      const searchTerm = document.getElementById('searchInput').value.trim();
+      const isSearching = searchTerm.length > 0;
+
+      filesToRender.forEach((file) => {
+        const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
+        
+        // Find index of file in original master list
+        const originalIndex = allFiles.findIndex(f => f.id === file.id);
+
+        // ACCESS LOGIC:
+        // 1. Verified subscriber -> ALLOW EVERYTHING.
+        // 2. Guest AND currently searching -> DISABLE ALL SEARCH RESULTS.
+        // 3. Guest AND not searching -> ALLOW ONLY ORIGINAL FIRST 5 FILES (indices 0..4).
+        const isAllowed = isSubscriber || (!isSearching && originalIndex >= 0 && originalIndex < 5);
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-800/60 border border-slate-700/60 rounded-xl p-5 flex flex-col justify-between transition-all shadow-lg group " + (isAllowed ? "hover:border-slate-600 hover:-translate-y-1" : "opacity-75");
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-lg ${isAllowed ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' : 'bg-slate-700/30 border-slate-700 text-slate-500'} border flex items-center justify-center">
+                <i data-lucide="${isAllowed ? 'file-text' : 'lock'}" class="w-5 h-5"></i>
+              </div>
+              ${!isAllowed ? '<span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">Subscriber Only</span>' : ''}
+            </div>
+
+            <h2 class="font-semibold text-slate-100 text-base leading-snug line-clamp-2 mb-4" title="${file.name}">
+              ${cleanTitle}
+            </h2>
+          </div>
+          
+          ${isAllowed ? `
+            <a 
+              href="${file.webViewLink}" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-md shadow-indigo-600/20"
+            >
+              <span>View / Download</span>
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+          ` : `
+            <button 
+              onclick="openModal()"
+              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-slate-800 border border-slate-700 text-slate-400 font-medium text-sm rounded-lg cursor-pointer hover:bg-slate-750 hover:text-slate-200 transition-colors"
+            >
+              <i data-lucide="lock" class="w-4 h-4"></i>
+              <span>Locked (Subscribe)</span>
+            </button>
+          `}
+        `;
+
+        sheetsGrid.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    // Modal Handlers
+    function openModal() {
+      document.getElementById('loginModal').classList.remove('hidden');
+      warmUpAppsScript(); // Pre-warm Apps Script server immediately on click
+      document.getElementById('emailInput').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+      document.getElementById('loginError').classList.add('hidden');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value.trim();
+      if (email) {
+        verifySubscriberEmail(email);
+      }
+    }
+
+    function handleLogout() {
+      isSubscriber = false;
+      localStorage.removeItem('user_subscriber_email');
+      updateStatusUI('');
+      renderSheets(getFilteredFiles());
+    }
+
+    // Pre-warm server when focus shifts to input
+    document.getElementById('emailInput').addEventListener('focus', warmUpAppsScript, { once: true });
+
+    // Search filter
+    document.getElementById('searchInput').addEventListener('input', () => {
+      renderSheets(getFilteredFiles());
+    });
+
+    init();
+  </script>
+</body>
+</html>
