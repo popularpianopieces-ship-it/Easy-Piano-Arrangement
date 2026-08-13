@@ -9,23 +9,53 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased relative">
+
+  <!-- Floating Top-Right CTA Buttons Group -->
+  <div id="floatingCtaGroup" class="fixed top-4 right-4 z-40 flex items-center gap-2">
+    <!-- Download ALL Instantly (Ko-fi Link) -->
+    <a 
+      href="https://ko-fi.com/s/a39b033712" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-2xl shadow-emerald-500/30 flex items-center gap-1.5 sm:gap-2 border border-emerald-300/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+    >
+      <i data-lucide="download" class="w-4 h-4 stroke-[2.5]"></i>
+      <span class="hidden sm:inline">Download ALL Instantly</span>
+      <span class="sm:hidden">Buy All</span>
+    </a>
+
+    <!-- Subscribe Now (Facebook Link) -->
+    <a 
+      id="floatingSubscribeBtn" 
+      href="https://www.facebook.com/popularpianopieces/subscribe/" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-2xl shadow-indigo-500/30 flex items-center gap-1.5 sm:gap-2 border border-amber-300/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+    >
+      <i data-lucide="sparkles" class="w-4 h-4 fill-slate-950"></i>
+      <span class="hidden sm:inline">Subscribe Now</span>
+      <span class="sm:hidden">Subscribe</span>
+    </a>
+  </div>
 
   <!-- Navigation / Header -->
   <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
-    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+    <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      
+      <!-- Brand Logo / Title (With mobile padding so floating buttons don't cover it) -->
+      <div class="flex items-center gap-3 pr-36 sm:pr-0">
+        <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30 shrink-0">
           <i data-lucide="music" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-2xl font-bold tracking-tight text-white">Piano Sheet Music</h1>
-          <p class="text-xs text-slate-400">Popular Piano Pieces Easy Collection</p>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">Piano Sheet Music</h1>
+          <p class="text-[11px] sm:text-xs text-slate-400">Popular Piano Pieces Collection</p>
         </div>
       </div>
 
       <!-- Right Header Actions: Status Badge & Search -->
-      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-between md:justify-end pr-0 md:pr-80">
         
         <!-- User Status Badge -->
         <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium">
@@ -35,7 +65,7 @@
         </div>
 
         <!-- Search Input -->
-        <div class="relative w-48 md:w-64">
+        <div class="relative w-full sm:w-48 md:w-56">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
           <input 
             type="text" 
@@ -49,7 +79,7 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="max-w-6xl mx-auto px-4 py-10">
+  <main class="max-w-6xl mx-auto px-4 py-8 sm:py-10">
     
     <!-- Status / Loading Indicator -->
     <div id="statusMessage" class="flex flex-col items-center justify-center py-20 text-center">
@@ -57,8 +87,8 @@
       <p class="text-slate-400 text-sm">Loading piano sheets...</p>
     </div>
 
-    <!-- Sheet Music Grid -->
-    <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden">
+    <!-- Sheet Music Grid (1 col on mobile, up to 4 cols on desktop) -->
+    <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 hidden">
       <!-- Cards rendered dynamically -->
     </div>
   </main>
@@ -112,16 +142,24 @@
     const API_KEY = "AIzaSyBybDa4zqq5ReVVvU3jp9saRO8rC_hSDDc";
     const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
     
-    // REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL FROM CODE.GS
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgWvlVdIT1QYyB07e4D8JvQ1MR73iVCQqES1XNkGMI6ibtw4b4jPx_vQuMm8KcXU2n/exec";
+    const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
     // ============================================================
 
     let allFiles = [];
     let isSubscriber = false;
 
+    // Set FB link dynamically on load
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("floatingSubscribeBtn");
+      if (btn && FB_SUBSCRIPTION_URL) {
+        btn.href = FB_SUBSCRIPTION_URL;
+      }
+    });
+
     // Pre-warm Apps Script server in background
     function warmUpAppsScript() {
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwgWvlVdIT1QYyB07e4D8JvQ1MR73iVCQqES1XNkGMI6ibtw4b4jPx_vQuMm8KcXU2n/exec") {
+      if (APPS_SCRIPT_URL) {
         fetch(`${APPS_SCRIPT_URL}?email=ping`).catch(() => {});
       }
     }
@@ -181,6 +219,7 @@
       const statusDot = document.getElementById('statusDot');
       const statusText = document.getElementById('userStatusText');
       const loginBtn = document.getElementById('loginBtn');
+      const floatingCtaGroup = document.getElementById('floatingCtaGroup');
 
       if (isSubscriber) {
         statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50";
@@ -188,12 +227,18 @@
         statusText.className = "text-emerald-400 font-semibold";
         loginBtn.innerText = "Log Out";
         loginBtn.onclick = handleLogout;
+
+        // Hide floating CTA buttons when logged in
+        if (floatingCtaGroup) floatingCtaGroup.classList.add('hidden');
       } else {
         statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
         statusText.innerText = "Guest (5 Free Downloads)";
         statusText.className = "text-slate-300";
         loginBtn.innerText = "Log In";
         loginBtn.onclick = openModal;
+
+        // Show floating CTA buttons for guests
+        if (floatingCtaGroup) floatingCtaGroup.classList.remove('hidden');
       }
     }
 
@@ -225,7 +270,6 @@
         }
         pageToken = data.nextPageToken;
 
-        // Progressively display initial results immediately
         if (allFiles.length === 0 && results.length > 0) {
           allFiles = [...results];
           document.getElementById('statusMessage').classList.add('hidden');
@@ -284,7 +328,6 @@
 
         const isAllowed = isSubscriber || (!isSearching && originalIndex >= 0 && originalIndex < 5);
 
-        // Optimized thumbnail size =s400 (loads much faster than =s800)
         const previewUrl = file.thumbnailLink 
           ? file.thumbnailLink.replace(/=s\d+$/, '=s400') 
           : null;
