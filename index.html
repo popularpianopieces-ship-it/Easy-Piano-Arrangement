@@ -9,7 +9,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased relative">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased relative flex flex-col justify-between">
 
   <!-- Floating Top-Right CTA Buttons Group -->
   <div id="floatingCtaGroup" class="fixed top-4 right-4 z-40 flex items-center gap-2">
@@ -43,26 +43,24 @@
   <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
     <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       
-      <!-- Brand Logo / Title (With mobile right padding for floating buttons clearance) -->
+      <!-- Left Side: Brand Logo, Title & Discreet Unlabeled Counter -->
       <div class="flex items-center gap-3 pr-36 sm:pr-0">
         <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30 shrink-0">
           <i data-lucide="music" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">Piano Sheet Music</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">Piano Sheet Music</h1>
+            <!-- Unlabeled Stealth Visit Counter -->
+            <span id="visitCount" class="font-mono text-xs text-slate-500 font-semibold select-none"></span>
+          </div>
           <p class="text-[11px] sm:text-xs text-slate-400">Popular Piano Pieces Collection</p>
         </div>
       </div>
 
-      <!-- Right Header Actions: Daily Visit Counter, Status Badge & Search -->
+      <!-- Right Header Actions: Status Badge & Search -->
       <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-between md:justify-end pr-0 md:pr-80">
         
-        <!-- Daily Visit Counter Badge -->
-        <div class="flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300">
-          <i data-lucide="eye" class="w-3.5 h-3.5 text-indigo-400"></i>
-          <span>Visits Today: <strong id="visitCount" class="text-white">...</strong></span>
-        </div>
-
         <!-- User Status Badge -->
         <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium">
           <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
@@ -85,7 +83,7 @@
   </header>
 
   <!-- Main Content Area -->
-  <main class="max-w-6xl mx-auto px-4 py-8 sm:py-10">
+  <main class="max-w-6xl mx-auto px-4 py-8 sm:py-10 flex-grow w-full">
     
     <!-- Status / Loading Indicator -->
     <div id="statusMessage" class="flex flex-col items-center justify-center py-20 text-center">
@@ -93,11 +91,18 @@
       <p class="text-slate-400 text-sm">Loading piano sheets...</p>
     </div>
 
-    <!-- Sheet Music Grid (1 col on mobile, up to 4 cols on desktop) -->
+    <!-- Sheet Music Grid -->
     <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 hidden">
       <!-- Cards rendered dynamically -->
     </div>
   </main>
+
+  <!-- Footer Area -->
+  <footer class="py-6 border-t border-slate-800/60 mt-10">
+    <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500">
+      <span>Piano Sheet Music Library</span>
+    </div>
+  </footer>
 
   <!-- Subscriber Login Modal -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -155,16 +160,16 @@
     let allFiles = [];
     let isSubscriber = false;
 
-    // Track and display visits per day automatically
-    async function updateDailyVisitCount() {
+    // Permanent non-resetting total visit counter
+    async function updateVisitCount() {
       const visitCountEl = document.getElementById('visitCount');
       if (!visitCountEl) return;
 
-      const today = new Date().toISOString().split('T')[0];
       const siteNamespace = "popular-piano-pieces"; 
+      const counterKey = "total-visits";
 
       try {
-        const res = await fetch(`https://api.counterapi.dev/v1/${siteNamespace}/${today}/up`);
+        const res = await fetch(`https://api.counterapi.dev/v1/${siteNamespace}/${counterKey}/up`);
         const data = await res.json();
         
         if (data && data.count !== undefined) {
@@ -174,17 +179,17 @@
         }
       } catch (err) {
         console.error("Visit counter error:", err);
-        visitCountEl.innerText = "-";
+        visitCountEl.innerText = "";
       }
     }
 
-    // Set FB link dynamically on load
+    // Set FB link and trigger visit counter on load
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById("floatingSubscribeBtn");
       if (btn && FB_SUBSCRIPTION_URL) {
         btn.href = FB_SUBSCRIPTION_URL;
       }
-      updateDailyVisitCount();
+      updateVisitCount();
     });
 
     // Pre-warm Apps Script server in background
