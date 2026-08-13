@@ -64,7 +64,7 @@
         <!-- User Status Badge -->
         <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium">
           <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
-          <span id="userStatusText" class="text-slate-300">Guest (5 Free Downloads)</span>
+          <span id="userStatusText" class="text-slate-300">Guest Access</span>
           <button id="loginBtn" onclick="openModal()" class="ml-2 text-indigo-400 hover:text-indigo-300 underline font-semibold">Log In</button>
         </div>
 
@@ -266,7 +266,7 @@
         if (floatingCtaGroup) floatingCtaGroup.classList.add('hidden');
       } else {
         statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
-        statusText.innerText = "Guest (5 Free Downloads)";
+        statusText.innerText = "Guest Access";
         statusText.className = "text-slate-300";
         loginBtn.innerText = "Log In";
         loginBtn.onclick = openModal;
@@ -352,14 +352,12 @@
       const sheetsGrid = document.getElementById('sheetsGrid');
       sheetsGrid.innerHTML = '';
 
-      const searchTerm = document.getElementById('searchInput').value.trim();
-      const isSearching = searchTerm.length > 0;
-
       filesToRender.forEach((file) => {
         const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
-        const originalIndex = allFiles.findIndex(f => f.id === file.id);
 
-        const isAllowed = isSubscriber || (!isSearching && originalIndex >= 0 && originalIndex < 5);
+        // Check if file name starts with "FREE" (case-insensitive)
+        const isFree = file.name.trim().toUpperCase().startsWith("FREE");
+        const isAllowed = isSubscriber || isFree;
 
         const previewUrl = file.thumbnailLink 
           ? file.thumbnailLink.replace(/=s\d+$/, '=s400') 
