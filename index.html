@@ -13,18 +13,6 @@
 
   <!-- Floating Top-Right CTA Buttons Group -->
   <div id="floatingCtaGroup" class="fixed top-4 right-4 z-40 flex items-center gap-2">
-    <!-- Download ALL Instantly (Ko-fi Link) -->
-    <a 
-      href="https://ko-fi.com/s/a39b033712" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-2xl shadow-emerald-500/30 flex items-center gap-1.5 sm:gap-2 border border-emerald-300/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
-    >
-      <i data-lucide="download" class="w-4 h-4 stroke-[2.5]"></i>
-      <span class="hidden sm:inline">Download ALL Instantly</span>
-      <span class="sm:hidden">Buy All</span>
-    </a>
-
     <!-- Subscribe Now (Facebook Link) -->
     <a 
       id="floatingSubscribeBtn" 
@@ -58,18 +46,28 @@
         </div>
       </div>
 
-      <!-- Right Header Actions: Status Badge & Search -->
-      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-between md:justify-end pr-0 md:pr-80">
+      <!-- Right Header Actions: Status Badge, TOC Button & Search -->
+      <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-between md:justify-end pr-0 md:pr-48">
         
+        <!-- Table of Contents (A-Z) Button -->
+        <button 
+          id="tocBtn" 
+          onclick="openTocModal()" 
+          class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shadow-sm cursor-pointer"
+        >
+          <i data-lucide="list-music" class="w-4 h-4 text-indigo-400"></i>
+          <span>Table of Contents</span>
+        </button>
+
         <!-- User Status Badge -->
         <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium">
           <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
           <span id="userStatusText" class="text-slate-300">Guest Access</span>
-          <button id="loginBtn" onclick="openModal()" class="ml-2 text-indigo-400 hover:text-indigo-300 underline font-semibold">Log In</button>
+          <button id="loginBtn" onclick="openModal()" class="ml-2 text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer">Log In</button>
         </div>
 
         <!-- Search Input -->
-        <div class="relative w-full sm:w-48 md:w-56">
+        <div class="relative w-full sm:w-44 md:w-48">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
           <input 
             type="text" 
@@ -104,10 +102,49 @@
     </div>
   </footer>
 
+  <!-- Table of Contents Modal (A-Z) -->
+  <div id="tocModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl relative">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-700/80 mb-4 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
+            <i data-lucide="list-music" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white leading-tight">Table of Contents</h3>
+            <p class="text-xs text-slate-400"><span id="tocTotalCount">0</span> sheets sorted alphabetically (A–Z)</p>
+          </div>
+        </div>
+        <button onclick="closeTocModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Quick Search Inside Table of Contents -->
+      <div class="relative mb-3 shrink-0">
+        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input 
+          type="text" 
+          id="tocFilterInput" 
+          placeholder="Filter titles in index..." 
+          class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+          oninput="renderTocList()"
+        />
+      </div>
+
+      <!-- Scrollable A-Z Sheet List -->
+      <div id="tocList" class="overflow-y-auto space-y-1.5 pr-1 divide-y divide-slate-700/40 text-sm">
+        <!-- Generated dynamically -->
+      </div>
+    </div>
+  </div>
+
   <!-- Subscriber Login Modal -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
@@ -126,7 +163,7 @@
             type="email" 
             id="emailInput" 
             required 
-            placeholder="subscriber@example.com"
+            placeholder="subscriber@example.com" 
             class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
           />
         </div>
@@ -137,8 +174,8 @@
 
         <button 
           type="submit" 
-          id="verifySubmitBtn"
-          class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2"
+          id="verifySubmitBtn" 
+          class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 cursor-pointer"
         >
           <span>Verify Email</span>
         </button>
@@ -374,9 +411,9 @@
                 <img 
                   src="${previewUrl}" 
                   alt="${cleanTitle} - Page 1 Preview" 
-                  class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300 bg-slate-800"
-                  loading="lazy"
-                  onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex flex-col items-center justify-center text-slate-500 p-4\'><i data-lucide=\'file-text\' class=\'w-10 h-10 mb-2 stroke-1\'></i><span class=\'text-xs\'>Sheet Preview</span></div>'; lucide.createIcons();"
+                  class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300 bg-slate-800" 
+                  loading="lazy" 
+                  onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-full h-full flex flex-col items-center justify-center text-slate-500 p-4\\'><i data-lucide=\\'file-text\\' class=\\'w-10 h-10 mb-2 stroke-1\\'></i><span class=\\'text-xs\\'>Sheet Preview</span></div>'; lucide.createIcons();"
                 />
               ` : `
                 <div class="w-full h-full flex flex-col items-center justify-center text-slate-500 p-4">
@@ -410,15 +447,15 @@
             <a 
               href="${file.webViewLink}" 
               target="_blank" 
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-md shadow-indigo-600/20"
+              rel="noopener noreferrer" 
+              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-md shadow-indigo-600/20 cursor-pointer"
             >
               <span>View Full PDF</span>
               <i data-lucide="external-link" class="w-4 h-4"></i>
             </a>
           ` : `
             <button 
-              onclick="openModal()"
+              onclick="openModal()" 
               class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-slate-800 border border-slate-700 text-slate-400 font-medium text-sm rounded-lg cursor-pointer hover:bg-slate-750 hover:text-slate-200 transition-colors"
             >
               <i data-lucide="lock" class="w-4 h-4"></i>
@@ -429,6 +466,92 @@
 
         sheetsGrid.appendChild(card);
       });
+
+      lucide.createIcons();
+    }
+
+    // ============================================================
+    // TABLE OF CONTENTS (A-Z) LOGIC
+    // ============================================================
+    function openTocModal() {
+      const tocModal = document.getElementById('tocModal');
+      document.getElementById('tocFilterInput').value = '';
+      document.getElementById('tocTotalCount').innerText = allFiles.length;
+      renderTocList();
+      tocModal.classList.remove('hidden');
+      document.getElementById('tocFilterInput').focus();
+    }
+
+    function closeTocModal() {
+      document.getElementById('tocModal').classList.add('hidden');
+    }
+
+    function renderTocList() {
+      const tocList = document.getElementById('tocList');
+      const filter = document.getElementById('tocFilterInput').value.trim().toLowerCase();
+
+      // Sort all files alphabetically A to Z
+      const sortedFiles = [...allFiles].sort((a, b) => {
+        const nameA = a.name.replace(/\.[^/.]+$/, "").toLowerCase();
+        const nameB = b.name.replace(/\.[^/.]+$/, "").toLowerCase();
+        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      const filtered = filter 
+        ? sortedFiles.filter(f => f.name.toLowerCase().includes(filter))
+        : sortedFiles;
+
+      if (filtered.length === 0) {
+        tocList.innerHTML = `<div class="py-8 text-center text-xs text-slate-400">No sheet music found matching "${filter}".</div>`;
+        return;
+      }
+
+      tocList.innerHTML = filtered.map((file, index) => {
+        const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
+        const isFree = file.name.trim().toUpperCase().startsWith("FREE");
+        const isAllowed = isSubscriber || isFree;
+
+        return `
+          <div class="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-slate-700/40 rounded-lg transition-colors group">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-[11px] font-mono text-slate-500 w-6 text-right shrink-0">${index + 1}.</span>
+              <span class="text-slate-200 font-medium truncate text-xs sm:text-sm group-hover:text-white" title="${file.name}">
+                ${cleanTitle}
+              </span>
+            </div>
+            
+            <div class="flex items-center gap-2 shrink-0">
+              ${isFree ? `
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-md">Free</span>
+              ` : `
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 ${isSubscriber ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'} rounded-md">
+                  ${isSubscriber ? 'Subscribed' : 'Locked'}
+                </span>
+              `}
+
+              ${isAllowed ? `
+                <a 
+                  href="${file.webViewLink}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm"
+                  title="Open Sheet PDF"
+                >
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+              ` : `
+                <button 
+                  onclick="closeTocModal(); openModal();" 
+                  class="p-1.5 bg-slate-700 hover:bg-slate-650 text-amber-400 rounded-md transition-colors"
+                  title="Unlock Sheet"
+                >
+                  <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
 
       lucide.createIcons();
     }
@@ -458,6 +581,9 @@
       localStorage.removeItem('user_subscriber_email');
       updateStatusUI('');
       renderSheets(getFilteredFiles());
+      if (!document.getElementById('tocModal').classList.contains('hidden')) {
+        renderTocList();
+      }
     }
 
     document.getElementById('emailInput').addEventListener('focus', warmUpAppsScript, { once: true });
