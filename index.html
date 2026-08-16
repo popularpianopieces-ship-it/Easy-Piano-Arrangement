@@ -344,7 +344,7 @@
           allFiles = [...results];
           document.getElementById('statusMessage').classList.add('hidden');
           document.getElementById('sheetsGrid').classList.remove('hidden');
-          renderSheets(allFiles);
+          renderSheets(getFilteredFiles());
         }
       } while (pageToken);
 
@@ -367,7 +367,7 @@
 
         statusMessage.classList.add('hidden');
         sheetsGrid.classList.remove('hidden');
-        renderSheets(allFiles);
+        renderSheets(getFilteredFiles());
 
       } catch (error) {
         statusMessage.innerHTML = `
@@ -379,10 +379,26 @@
       }
     }
 
+    // Filters and sorts: FREE sheets appear first, then A-Z within each category
     function getFilteredFiles() {
       const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-      if (!searchTerm) return allFiles;
-      return allFiles.filter(file => file.name.toLowerCase().includes(searchTerm));
+      const baseFiles = searchTerm 
+        ? allFiles.filter(file => file.name.toLowerCase().includes(searchTerm))
+        : allFiles;
+
+      return [...baseFiles].sort((a, b) => {
+        const aIsFree = a.name.trim().toUpperCase().includes("FREE");
+        const bIsFree = b.name.trim().toUpperCase().includes("FREE");
+
+        // 1. Priority: Free sheets come first
+        if (aIsFree && !bIsFree) return -1;
+        if (!aIsFree && bIsFree) return 1;
+
+        // 2. Secondary sort: Alphabetical (A to Z)
+        const nameA = a.name.replace(/\.[^/.]+$/, "").toLowerCase();
+        const nameB = b.name.replace(/\.[^/.]+$/, "").toLowerCase();
+        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+      });
     }
 
     function renderSheets(filesToRender) {
@@ -392,10 +408,11 @@
       filesToRender.forEach((file) => {
         const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
 
-        // Check if file name starts with "FREE" (case-insensitive)
-        const isFree = file.name.trim().toUpperCase().startsWith("FREE");
+        const isFree = file.name.trim().toUpperCase().includes("FREE");
         const isAllowed = isSubscriber || isFree;
+        const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
 
+        // Sharp high-res preview (=s800)
         const previewUrl = file.thumbnailLink 
           ? file.thumbnailLink.replace(/=s\d+$/, '=s800') 
           : null;
@@ -442,24 +459,38 @@
             </h2>
           </div>
           
-          <!-- Action Button -->
+          <!-- Action Buttons -->
           ${isAllowed ? `
-            <a 
-              href="${file.webViewLink}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-md shadow-indigo-600/20 cursor-pointer"
-            >
-              <span>View Full PDF</span>
-              <i data-lucide="external-link" class="w-4 h-4"></i>
-            </a>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <a 
+                href="${file.webViewLink}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+                title="View preview on Google Drive"
+              >
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                <span>View</span>
+              </a>
+
+              <a 
+                href="${directDownloadUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-colors shadow-md shadow-indigo-600/20 cursor-pointer"
+                title="Direct PDF download"
+              >
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Download</span>
+              </a>
+            </div>
           ` : `
             <button 
               onclick="openModal()" 
-              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-slate-800 border border-slate-700 text-slate-400 font-medium text-sm rounded-lg cursor-pointer hover:bg-slate-750 hover:text-slate-200 transition-colors"
+              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-slate-800 border border-slate-700 text-slate-400 font-medium text-sm rounded-lg cursor-pointer hover:bg-slate-750 hover:text-slate-200 transition-colors mt-2"
             >
               <i data-lucide="lock" class="w-4 h-4"></i>
-              <span>Locked (Subscribe)</span>
+              <span>Subscribe Now</span>
             </button>
           `}
         `;
@@ -490,8 +521,14 @@
       const tocList = document.getElementById('tocList');
       const filter = document.getElementById('tocFilterInput').value.trim().toLowerCase();
 
-      // Sort all files alphabetically A to Z
+      // Sort: Free sheets first, then A-Z
       const sortedFiles = [...allFiles].sort((a, b) => {
+        const aIsFree = a.name.trim().toUpperCase().includes("FREE");
+        const bIsFree = b.name.trim().toUpperCase().includes("FREE");
+
+        if (aIsFree && !bIsFree) return -1;
+        if (!aIsFree && bIsFree) return 1;
+
         const nameA = a.name.replace(/\.[^/.]+$/, "").toLowerCase();
         const nameB = b.name.replace(/\.[^/.]+$/, "").toLowerCase();
         return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
@@ -508,8 +545,9 @@
 
       tocList.innerHTML = filtered.map((file, index) => {
         const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
-        const isFree = file.name.trim().toUpperCase().startsWith("FREE");
+        const isFree = file.name.trim().toUpperCase().includes("FREE");
         const isAllowed = isSubscriber || isFree;
+        const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
 
         return `
           <div class="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-slate-700/40 rounded-lg transition-colors group">
@@ -530,19 +568,30 @@
               `}
 
               ${isAllowed ? `
-                <a 
-                  href="${file.webViewLink}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm"
-                  title="Open Sheet PDF"
-                >
-                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                </a>
+                <div class="flex items-center gap-1">
+                  <a 
+                    href="${file.webViewLink}" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition-colors"
+                    title="View PDF"
+                  >
+                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                  </a>
+                  <a 
+                    href="${directDownloadUrl}" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm"
+                    title="Direct Download PDF"
+                  >
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  </a>
+                </div>
               ` : `
                 <button 
                   onclick="closeTocModal(); openModal();" 
-                  class="p-1.5 bg-slate-700 hover:bg-slate-650 text-amber-400 rounded-md transition-colors"
+                  class="p-1.5 bg-slate-700 hover:bg-slate-650 text-amber-400 rounded-md transition-colors cursor-pointer"
                   title="Unlock Sheet"
                 >
                   <i data-lucide="lock" class="w-3.5 h-3.5"></i>
