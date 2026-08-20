@@ -106,7 +106,7 @@
         <!-- 5 Titles Injected Here -->
       </div>
 
-      <!-- Page Indicator / Controls -->
+      <!-- Page Indicator Dots -->
       <div id="recentPaginationDots" class="flex items-center gap-1 shrink-0">
         <!-- Dots injected here -->
       </div>
@@ -229,6 +229,20 @@
     let recentTimer = null;
     let isSubscriber = false;
 
+    // Track downloads to Google Apps Script
+    function trackDownload(fileId, fileName) {
+      const savedEmail = localStorage.getItem('user_subscriber_email');
+      const userType = isSubscriber && savedEmail ? `Subscriber (${savedEmail})` : "Guest";
+      
+      const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(fileName)}&userType=${encodeURIComponent(userType)}`;
+      
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(logUrl);
+      } else {
+        fetch(logUrl, { mode: 'no-cors' }).catch(() => {});
+      }
+    }
+
     // Permanent visit counter
     async function updateVisitCount() {
       const el = document.getElementById('visitCount');
@@ -348,14 +362,12 @@
       return results;
     }
 
-    // 5 Titles / 5 Seconds Recent Releases Logic
     function initRecentRotator() {
       const bannerSection = document.getElementById('recentBannerSection');
       if (!bannerSection) return;
 
       const fortyEightHoursAgo = Date.now() - (48 * 60 * 60 * 1000);
 
-      // Filter and sort newest first
       recentFilesList = allFiles.filter(file => {
         if (!file.createdTime) return false;
         return new Date(file.createdTime).getTime() >= fortyEightHoursAgo;
@@ -391,7 +403,6 @@
       const container = document.getElementById('recentItemsContainer');
       if (!container || recentFilesList.length === 0) return;
 
-      // Smooth subtle fade effect
       container.style.opacity = '0';
 
       setTimeout(() => {
@@ -410,6 +421,7 @@
               href="${targetUrl}" 
               target="_blank" 
               rel="noopener noreferrer" 
+              ${isAllowed ? `onclick="trackDownload('${file.id}', '${encodeURIComponent(title)}')"` : ''}
               class="inline-flex items-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/70 hover:border-indigo-500/50 text-slate-200 hover:text-white px-2.5 py-1 rounded-md transition-all truncate max-w-[200px] sm:max-w-[220px]"
               title="${sanitizeText(title)}"
             >
@@ -433,7 +445,7 @@
       recentTimer = setInterval(() => {
         recentBatchIndex = (recentBatchIndex + 1) % totalPages;
         displayRecentBatch();
-      }, 5000); // Transitions every 5 seconds
+      }, 5000);
     }
 
     function pauseRecentRotation() {
@@ -550,7 +562,13 @@
                   <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                   <span>View</span>
                 </a>
-                <a href="${directDownloadUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors shadow-sm">
+                <a 
+                  href="${directDownloadUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  onclick="trackDownload('${file.id}', '${encodeURIComponent(title)}')"
+                  class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors shadow-sm"
+                >
                   <i data-lucide="download" class="w-3.5 h-3.5"></i>
                   <span>Download</span>
                 </a>
@@ -613,7 +631,14 @@
                 <a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition-colors" title="View Preview">
                   <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                 </a>
-                <a href="${directDownloadUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm" title="Download PDF">
+                <a 
+                  href="${directDownloadUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  onclick="trackDownload('${file.id}', '${encodeURIComponent(title)}')"
+                  class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm" 
+                  title="Download PDF"
+                >
                   <i data-lucide="download" class="w-3.5 h-3.5"></i>
                 </a>
               ` : `
