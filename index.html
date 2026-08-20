@@ -9,101 +9,135 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased relative flex flex-col justify-between">
-
-  <!-- Floating Top-Right CTA Buttons Group -->
-  <div id="floatingCtaGroup" class="fixed top-4 right-4 z-40 flex items-center gap-2">
-    <!-- Subscribe Now (Facebook Link) -->
-    <a 
-      id="floatingSubscribeBtn" 
-      href="https://www.facebook.com/popularpianopieces/subscribe/" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      class="bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider py-2 px-3 sm:py-2.5 sm:px-4 rounded-full shadow-2xl shadow-indigo-500/30 flex items-center gap-1.5 sm:gap-2 border border-amber-300/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
-    >
-      <i data-lucide="sparkles" class="w-4 h-4 fill-slate-950"></i>
-      <span class="hidden sm:inline">Subscribe Now</span>
-      <span class="sm:hidden">Subscribe</span>
-    </a>
-  </div>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
   <!-- Navigation / Header -->
-  <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
-    <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
       
-      <!-- Left Side: Brand Logo, Title & Discreet Unlabeled Counter -->
-      <div class="flex items-center gap-3 pr-36 sm:pr-0">
-        <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30 shrink-0">
-          <i data-lucide="music" class="w-6 h-6"></i>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">Piano Sheet Music</h1>
-            <!-- Unlabeled Stealth Visit Counter -->
-            <span id="visitCount" class="font-mono text-xs text-slate-500 font-semibold select-none"></span>
+      <!-- Brand Logo, Title & Stealth Visit Counter -->
+      <div class="flex items-center justify-between w-full md:w-auto gap-3">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30 shrink-0 shadow-inner">
+            <i data-lucide="music" class="w-6 h-6"></i>
           </div>
-          <p class="text-[11px] sm:text-xs text-slate-400">Popular Piano Pieces Collection</p>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">Piano Sheet Music</h1>
+              <span id="visitCount" class="font-mono text-xs text-slate-500 font-semibold select-none"></span>
+            </div>
+            <p class="text-xs text-slate-400">Popular Piano Pieces Collection</p>
+          </div>
         </div>
+
+        <!-- Mobile Floating Subscribe Link -->
+        <a 
+          id="mobileSubscribeBtn"
+          href="https://www.facebook.com/popularpianopieces/subscribe/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="md:hidden bg-gradient-to-r from-amber-500 to-indigo-600 text-slate-950 font-bold text-xs uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md"
+        >
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
+          <span>Join</span>
+        </a>
       </div>
 
-      <!-- Right Header Actions: Status Badge, TOC Button & Search -->
-      <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-between md:justify-end pr-0 md:pr-48">
+      <!-- Action Center -->
+      <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-start md:justify-end">
         
-        <!-- Table of Contents (A-Z) Button -->
+        <!-- Table of Contents Button -->
         <button 
           id="tocBtn" 
           onclick="openTocModal()" 
-          class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shadow-sm cursor-pointer"
+          class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white px-3 py-2 rounded-lg text-xs font-medium transition-all shadow-sm cursor-pointer active:scale-95"
         >
           <i data-lucide="list-music" class="w-4 h-4 text-indigo-400"></i>
           <span>Table of Contents</span>
         </button>
 
         <!-- User Status Badge -->
-        <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium">
+        <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-2 rounded-lg text-xs font-medium">
           <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
           <span id="userStatusText" class="text-slate-300">Guest Access</span>
-          <button id="loginBtn" onclick="openModal()" class="ml-2 text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer">Log In</button>
+          <button id="loginBtn" onclick="openModal()" class="ml-1 text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer">Log In</button>
         </div>
 
+        <!-- Desktop Subscribe Button -->
+        <a 
+          id="headerSubscribeBtn" 
+          href="https://www.facebook.com/popularpianopieces/subscribe/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="hidden md:inline-flex bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider py-2 px-3.5 rounded-lg shadow-lg shadow-indigo-500/20 items-center gap-1.5 border border-amber-300/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+        >
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
+          <span>Subscribe Now</span>
+        </a>
+
         <!-- Search Input -->
-        <div class="relative w-full sm:w-44 md:w-48">
-          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <div class="relative w-full sm:w-52">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
           <input 
             type="text" 
             id="searchInput" 
             placeholder="Search sheets..." 
-            class="w-full bg-slate-800 text-slate-200 placeholder-slate-400 text-sm rounded-lg pl-9 pr-4 py-1.5 border border-slate-700 focus:outline-none focus:border-indigo-500 transition-colors"
+            class="w-full bg-slate-800 text-slate-100 placeholder-slate-400 text-xs sm:text-sm rounded-lg pl-9 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
           />
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Content Area -->
-  <main class="max-w-6xl mx-auto px-4 py-8 sm:py-10 flex-grow w-full">
+  <!-- 48-Hour Recent Releases Rotator Banner (5 Titles / 5 Secs) -->
+  <div id="recentBannerSection" class="bg-slate-950/60 border-b border-indigo-900/30 backdrop-blur-sm hidden" onmouseenter="pauseRecentRotation()" onmouseleave="startRecentRotation()">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Left Tag -->
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-bold text-[11px] uppercase tracking-wide">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+          Added in Last 48 Hours
+        </span>
+      </div>
+
+      <!-- 5-Item Static Slot Container -->
+      <div id="recentItemsContainer" class="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 text-xs w-full transition-opacity duration-300">
+        <!-- 5 Titles Injected Here -->
+      </div>
+
+      <!-- Page Indicator / Controls -->
+      <div id="recentPaginationDots" class="flex items-center gap-1 shrink-0">
+        <!-- Dots injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-grow w-full">
     
     <!-- Status / Loading Indicator -->
-    <div id="statusMessage" class="flex flex-col items-center justify-center py-20 text-center">
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500 mb-4"></div>
-      <p class="text-slate-400 text-sm">Loading piano sheets...</p>
+    <div id="statusMessage" class="flex flex-col items-center justify-center py-24 text-center">
+      <div class="animate-spin rounded-full h-10 w-10 border-2 border-indigo-500 border-t-transparent mb-4"></div>
+      <p class="text-slate-400 text-sm font-medium">Scanning piano sheets archive...</p>
     </div>
 
     <!-- Sheet Music Grid -->
-    <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 hidden">
+    <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden">
       <!-- Cards rendered dynamically -->
     </div>
   </main>
 
   <!-- Footer Area -->
-  <footer class="py-6 border-t border-slate-800/60 mt-10">
-    <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500">
-      <span>Piano Sheet Music Library</span>
+  <footer class="py-6 border-t border-slate-800 bg-slate-950/40 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>Piano Sheet Music Library &copy; 2026</span>
+      <span>Instant Digital Sheet Music Access</span>
     </div>
   </footer>
 
-  <!-- Table of Contents Modal (A-Z) -->
-  <div id="tocModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <!-- Table of Contents Modal -->
+  <div id="tocModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'tocModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl relative">
       
       <!-- Modal Header -->
@@ -117,12 +151,12 @@
             <p class="text-xs text-slate-400"><span id="tocTotalCount">0</span> sheets sorted alphabetically (A–Z)</p>
           </div>
         </div>
-        <button onclick="closeTocModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer">
+        <button onclick="closeTocModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Quick Search Inside Table of Contents -->
+      <!-- Search in TOC -->
       <div class="relative mb-3 shrink-0">
         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
         <input 
@@ -134,7 +168,7 @@
         />
       </div>
 
-      <!-- Scrollable A-Z Sheet List -->
+      <!-- Scrollable List -->
       <div id="tocList" class="overflow-y-auto space-y-1.5 pr-1 divide-y divide-slate-700/40 text-sm">
         <!-- Generated dynamically -->
       </div>
@@ -142,9 +176,9 @@
   </div>
 
   <!-- Subscriber Login Modal -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'loginModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
@@ -153,7 +187,7 @@
           <i data-lucide="user-check" class="w-6 h-6"></i>
         </div>
         <h3 class="text-xl font-bold text-white">Subscriber Login</h3>
-        <p class="text-xs text-slate-400 mt-1">Enter your subscriber email to access all sheet music downloads.</p>
+        <p class="text-xs text-slate-400 mt-1">Enter your active email to unlock all piano sheets.</p>
       </div>
 
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
@@ -163,19 +197,19 @@
             type="email" 
             id="emailInput" 
             required 
-            placeholder="subscriber@example.com" 
+            placeholder="name@example.com" 
             class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
           />
         </div>
 
         <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 border border-red-500/20 p-2.5 rounded-lg">
-          Email not found in subscriber list.
+          Email not found in active subscriber records.
         </div>
 
         <button 
           type="submit" 
           id="verifySubmitBtn" 
-          class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-colors shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 cursor-pointer"
+          class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm rounded-lg transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 cursor-pointer"
         >
           <span>Verify Email</span>
         </button>
@@ -184,56 +218,32 @@
   </div>
 
   <script>
-    // ============================================================
-    // YOUR CONFIGURATION KEYS
-    // ============================================================
     const API_KEY = "AIzaSyBybDa4zqq5ReVVvU3jp9saRO8rC_hSDDc";
     const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
-    
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytCjp1VT0mn0gte13oRbi-vjCs1vwUTfgfOpHwF1tkxdZXphDV1jenTZiGN63tNlpo/exec";
     const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
-    // ============================================================
 
     let allFiles = [];
+    let recentFilesList = [];
+    let recentBatchIndex = 0;
+    let recentTimer = null;
     let isSubscriber = false;
 
-    // Permanent non-resetting total visit counter
+    // Permanent visit counter
     async function updateVisitCount() {
-      const visitCountEl = document.getElementById('visitCount');
-      if (!visitCountEl) return;
-
-      const siteNamespace = "popular-piano-pieces"; 
-      const counterKey = "total-visits";
-
+      const el = document.getElementById('visitCount');
+      if (!el) return;
       try {
-        const res = await fetch(`https://api.counterapi.dev/v1/${siteNamespace}/${counterKey}/up`);
+        const res = await fetch('https://api.counterapi.dev/v1/popular-piano-pieces/total-visits/up');
         const data = await res.json();
-        
-        if (data && data.count !== undefined) {
-          visitCountEl.innerText = data.count.toLocaleString();
-        } else {
-          visitCountEl.innerText = "1";
-        }
-      } catch (err) {
-        console.error("Visit counter error:", err);
-        visitCountEl.innerText = "";
+        if (data && data.count !== undefined) el.innerText = `• ${data.count.toLocaleString()} visits`;
+      } catch {
+        el.innerText = "";
       }
     }
 
-    // Set FB link and trigger visit counter on load
-    document.addEventListener("DOMContentLoaded", () => {
-      const btn = document.getElementById("floatingSubscribeBtn");
-      if (btn && FB_SUBSCRIPTION_URL) {
-        btn.href = FB_SUBSCRIPTION_URL;
-      }
-      updateVisitCount();
-    });
-
-    // Pre-warm Apps Script server in background
     function warmUpAppsScript() {
-      if (APPS_SCRIPT_URL) {
-        fetch(`${APPS_SCRIPT_URL}?email=ping`).catch(() => {});
-      }
+      if (APPS_SCRIPT_URL) fetch(`${APPS_SCRIPT_URL}?email=ping`).catch(() => {});
     }
 
     async function verifySubscriberEmail(email, isAutoLogin = false) {
@@ -243,10 +253,7 @@
 
       if (!isAutoLogin && submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = `
-          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-          <span>Verifying...</span>
-        `;
+        submitBtn.innerHTML = `<div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div><span>Verifying...</span>`;
       }
 
       try {
@@ -259,6 +266,7 @@
           updateStatusUI(email);
           if (!isAutoLogin) closeModal();
           renderSheets(getFilteredFiles());
+          displayRecentBatch();
         } else {
           if (!isAutoLogin) {
             errorDiv.classList.remove('hidden');
@@ -267,9 +275,8 @@
           }
         }
       } catch (err) {
-        console.error("Error verifying email:", err);
         if (!isAutoLogin) {
-          errorDiv.innerText = "Verification failed. Check Web App URL.";
+          errorDiv.innerText = "Verification failed. Please check network connection.";
           errorDiv.classList.remove('hidden');
         }
       } finally {
@@ -282,16 +289,15 @@
 
     function checkSavedLogin() {
       const savedEmail = localStorage.getItem('user_subscriber_email');
-      if (savedEmail) {
-        verifySubscriberEmail(savedEmail, true);
-      }
+      if (savedEmail) verifySubscriberEmail(savedEmail, true);
     }
 
     function updateStatusUI(email) {
       const statusDot = document.getElementById('statusDot');
       const statusText = document.getElementById('userStatusText');
       const loginBtn = document.getElementById('loginBtn');
-      const floatingCtaGroup = document.getElementById('floatingCtaGroup');
+      const headerSubBtn = document.getElementById('headerSubscribeBtn');
+      const mobileSubBtn = document.getElementById('mobileSubscribeBtn');
 
       if (isSubscriber) {
         statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50";
@@ -300,7 +306,8 @@
         loginBtn.innerText = "Log Out";
         loginBtn.onclick = handleLogout;
 
-        if (floatingCtaGroup) floatingCtaGroup.classList.add('hidden');
+        if (headerSubBtn) headerSubBtn.classList.add('hidden');
+        if (mobileSubBtn) mobileSubBtn.classList.add('hidden');
       } else {
         statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
         statusText.innerText = "Guest Access";
@@ -308,28 +315,25 @@
         loginBtn.innerText = "Log In";
         loginBtn.onclick = openModal;
 
-        if (floatingCtaGroup) floatingCtaGroup.classList.remove('hidden');
+        if (headerSubBtn) headerSubBtn.classList.remove('hidden');
+        if (mobileSubBtn) mobileSubBtn.classList.remove('hidden');
       }
     }
 
-    // Deep Scan for Google Drive files & progressive rendering
     async function scanFolderDeep(folderId) {
       let results = [];
       let pageToken = null;
 
       do {
-        let query = `'${folderId}' in parents and trashed = false`;
-        let url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&pageSize=100&fields=nextPageToken,files(id,name,webViewLink,mimeType,thumbnailLink)&key=${API_KEY}`;
-        
+        const query = `'${folderId}' in parents and trashed = false`;
+        let url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&pageSize=100&fields=nextPageToken,files(id,name,webViewLink,mimeType,thumbnailLink,createdTime)&key=${API_KEY}`;
         if (pageToken) url += `&pageToken=${pageToken}`;
 
-        const response = await fetch(url);
-        const data = await response.json();
-
+        const res = await fetch(url);
+        const data = await res.json();
         if (data.error) throw new Error(data.error.message);
 
         const items = data.files || [];
-
         for (const item of items) {
           if (item.mimeType === 'application/vnd.google-apps.folder') {
             const subFiles = await scanFolderDeep(item.id);
@@ -339,20 +343,106 @@
           }
         }
         pageToken = data.nextPageToken;
-
-        if (allFiles.length === 0 && results.length > 0) {
-          allFiles = [...results];
-          document.getElementById('statusMessage').classList.add('hidden');
-          document.getElementById('sheetsGrid').classList.remove('hidden');
-          renderSheets(getFilteredFiles());
-        }
       } while (pageToken);
 
       return results;
     }
 
+    // 5 Titles / 5 Seconds Recent Releases Logic
+    function initRecentRotator() {
+      const bannerSection = document.getElementById('recentBannerSection');
+      if (!bannerSection) return;
+
+      const fortyEightHoursAgo = Date.now() - (48 * 60 * 60 * 1000);
+
+      // Filter and sort newest first
+      recentFilesList = allFiles.filter(file => {
+        if (!file.createdTime) return false;
+        return new Date(file.createdTime).getTime() >= fortyEightHoursAgo;
+      }).sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+
+      if (recentFilesList.length === 0) {
+        bannerSection.classList.add('hidden');
+        return;
+      }
+
+      bannerSection.classList.remove('hidden');
+      recentBatchIndex = 0;
+      renderRecentDots();
+      displayRecentBatch();
+      startRecentRotation();
+    }
+
+    function renderRecentDots() {
+      const dotsContainer = document.getElementById('recentPaginationDots');
+      const totalPages = Math.ceil(recentFilesList.length / 5);
+      
+      if (totalPages <= 1) {
+        dotsContainer.innerHTML = '';
+        return;
+      }
+
+      dotsContainer.innerHTML = Array.from({ length: totalPages }, (_, i) => `
+        <span class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === recentBatchIndex ? 'bg-indigo-400 w-3.5' : 'bg-slate-600'}"></span>
+      `).join('');
+    }
+
+    function displayRecentBatch() {
+      const container = document.getElementById('recentItemsContainer');
+      if (!container || recentFilesList.length === 0) return;
+
+      // Smooth subtle fade effect
+      container.style.opacity = '0';
+
+      setTimeout(() => {
+        const start = recentBatchIndex * 5;
+        const currentBatch = recentFilesList.slice(start, start + 5);
+
+        container.innerHTML = currentBatch.map(file => {
+          const title = file.name.replace(/\.[^/.]+$/, "");
+          const isFree = file.name.toUpperCase().includes("FREE");
+          const isAllowed = isSubscriber || isFree;
+          const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+          const targetUrl = isAllowed ? directDownloadUrl : file.webViewLink;
+
+          return `
+            <a 
+              href="${targetUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="inline-flex items-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/70 hover:border-indigo-500/50 text-slate-200 hover:text-white px-2.5 py-1 rounded-md transition-all truncate max-w-[200px] sm:max-w-[220px]"
+              title="${sanitizeText(title)}"
+            >
+              <i data-lucide="music-2" class="w-3 h-3 text-indigo-400 shrink-0"></i>
+              <span class="truncate font-medium">${sanitizeText(title)}</span>
+            </a>
+          `;
+        }).join('');
+
+        renderRecentDots();
+        lucide.createIcons();
+        container.style.opacity = '1';
+      }, 150);
+    }
+
+    function startRecentRotation() {
+      if (recentTimer) clearInterval(recentTimer);
+      const totalPages = Math.ceil(recentFilesList.length / 5);
+      if (totalPages <= 1) return;
+
+      recentTimer = setInterval(() => {
+        recentBatchIndex = (recentBatchIndex + 1) % totalPages;
+        displayRecentBatch();
+      }, 5000); // Transitions every 5 seconds
+    }
+
+    function pauseRecentRotation() {
+      if (recentTimer) clearInterval(recentTimer);
+    }
+
     async function init() {
       checkSavedLogin();
+      updateVisitCount();
 
       const statusMessage = document.getElementById('statusMessage');
       const sheetsGrid = document.getElementById('sheetsGrid');
@@ -368,148 +458,123 @@
         statusMessage.classList.add('hidden');
         sheetsGrid.classList.remove('hidden');
         renderSheets(getFilteredFiles());
-
+        initRecentRotator();
       } catch (error) {
         statusMessage.innerHTML = `
           <div class="bg-red-500/10 text-red-400 border border-red-500/30 p-4 rounded-xl max-w-md text-left">
-            <p class="text-sm font-semibold">Error loading files:</p>
+            <p class="text-sm font-semibold">Error loading library:</p>
             <p class="text-xs mt-1 text-slate-300">${error.message}</p>
           </div>
         `;
       }
     }
 
-    // Filters and sorts: FREE sheets appear first, then A-Z within each category
     function getFilteredFiles() {
-      const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-      const baseFiles = searchTerm 
-        ? allFiles.filter(file => file.name.toLowerCase().includes(searchTerm))
-        : allFiles;
+      const term = document.getElementById('searchInput').value.trim().toLowerCase();
+      const list = term ? allFiles.filter(f => f.name.toLowerCase().includes(term)) : allFiles;
 
-      return [...baseFiles].sort((a, b) => {
-        const aIsFree = a.name.trim().toUpperCase().includes("FREE");
-        const bIsFree = b.name.trim().toUpperCase().includes("FREE");
+      return [...list].sort((a, b) => {
+        const aFree = a.name.toUpperCase().includes("FREE");
+        const bFree = b.name.toUpperCase().includes("FREE");
+        if (aFree && !bFree) return -1;
+        if (!aFree && bFree) return 1;
 
-        // 1. Priority: Free sheets come first
-        if (aIsFree && !bIsFree) return -1;
-        if (!aIsFree && bIsFree) return 1;
-
-        // 2. Secondary sort: Alphabetical (A to Z)
         const nameA = a.name.replace(/\.[^/.]+$/, "").toLowerCase();
         const nameB = b.name.replace(/\.[^/.]+$/, "").toLowerCase();
         return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
       });
     }
 
-    function renderSheets(filesToRender) {
-      const sheetsGrid = document.getElementById('sheetsGrid');
-      sheetsGrid.innerHTML = '';
+    function sanitizeText(str) {
+      const temp = document.createElement('div');
+      temp.textContent = str;
+      return temp.innerHTML;
+    }
 
-      filesToRender.forEach((file) => {
-        const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
+    function renderSheets(files) {
+      const grid = document.getElementById('sheetsGrid');
+      grid.innerHTML = '';
 
-        const isFree = file.name.trim().toUpperCase().includes("FREE");
+      if (files.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 text-sm">No sheet music matching your query.</div>`;
+        return;
+      }
+
+      files.forEach((file) => {
+        const title = file.name.replace(/\.[^/.]+$/, "");
+        const isFree = file.name.toUpperCase().includes("FREE");
         const isAllowed = isSubscriber || isFree;
         const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
-
-        // Sharp high-res preview (=s800)
-        const previewUrl = file.thumbnailLink 
-          ? file.thumbnailLink.replace(/=s\d+$/, '=s800') 
-          : null;
+        const previewUrl = file.thumbnailLink ? file.thumbnailLink.replace(/=s\d+$/, '=w600-h800') : null;
 
         const card = document.createElement('div');
-        card.className = "bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 flex flex-col justify-between transition-all shadow-lg group " + (isAllowed ? "hover:border-slate-600 hover:-translate-y-1" : "opacity-90");
+        card.className = "bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 flex flex-col justify-between transition-all duration-200 shadow-lg " + (isAllowed ? "hover:border-slate-500 hover:-translate-y-0.5" : "opacity-90");
 
         card.innerHTML = `
           <div>
-            <!-- Page 1 Image Preview Container -->
-            <div class="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-slate-900 mb-4 border border-slate-700/50 shadow-inner group">
+            <div class="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-slate-950 mb-3 border border-slate-700/50 shadow-inner flex items-center justify-center">
               ${previewUrl ? `
                 <img 
                   src="${previewUrl}" 
-                  alt="${cleanTitle} - Page 1 Preview" 
-                  class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300 bg-slate-800" 
-                  loading="lazy" 
-                  onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-full h-full flex flex-col items-center justify-center text-slate-500 p-4\\'><i data-lucide=\\'file-text\\' class=\\'w-10 h-10 mb-2 stroke-1\\'></i><span class=\\'text-xs\\'>Sheet Preview</span></div>'; lucide.createIcons();"
+                  alt="${sanitizeText(title)}" 
+                  class="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300" 
+                  loading="lazy"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                 />
+                <div class="w-full h-full hidden flex-col items-center justify-center text-slate-500 p-4">
+                  <i data-lucide="file-text" class="w-10 h-10 mb-2 stroke-1"></i>
+                  <span class="text-xs">Sheet Preview</span>
+                </div>
               ` : `
                 <div class="w-full h-full flex flex-col items-center justify-center text-slate-500 p-4">
                   <i data-lucide="file-text" class="w-10 h-10 mb-2 stroke-1"></i>
                   <span class="text-xs">Sheet Preview</span>
                 </div>
               `}
-
-              <!-- Badge Overlay -->
               <div class="absolute top-2 right-2">
-                ${!isAllowed ? `
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-amber-500/90 text-slate-950 backdrop-blur rounded-md shadow-md flex items-center gap-1">
-                    <i data-lucide="lock" class="w-3 h-3"></i> Locked
-                  </span>
-                ` : `
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-emerald-500/90 text-slate-950 backdrop-blur rounded-md shadow-md flex items-center gap-1">
-                    <i data-lucide="check" class="w-3 h-3"></i> Available
-                  </span>
-                `}
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow flex items-center gap-1 ${isAllowed ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'}">
+                  <i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3 h-3"></i>
+                  ${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Subscribers'}
+                </span>
               </div>
             </div>
-
-            <!-- Title -->
-            <h2 class="font-semibold text-slate-100 text-base leading-snug line-clamp-2 mb-4" title="${file.name}">
-              ${cleanTitle}
+            <h2 class="font-semibold text-slate-100 text-sm leading-snug line-clamp-2 mb-3" title="${sanitizeText(file.name)}">
+              ${sanitizeText(title)}
             </h2>
           </div>
-          
-          <!-- Action Buttons -->
-          ${isAllowed ? `
-            <div class="grid grid-cols-2 gap-2 mt-2">
-              <a 
-                href="${file.webViewLink}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
-                title="View preview on Google Drive"
-              >
-                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                <span>View</span>
-              </a>
 
-              <a 
-                href="${directDownloadUrl}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-colors shadow-md shadow-indigo-600/20 cursor-pointer"
-                title="Direct PDF download"
-              >
-                <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                <span>Download</span>
-              </a>
-            </div>
-          ` : `
-            <button 
-              onclick="openModal()" 
-              class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-slate-800 border border-slate-700 text-slate-400 font-medium text-sm rounded-lg cursor-pointer hover:bg-slate-750 hover:text-slate-200 transition-colors mt-2"
-            >
-              <i data-lucide="lock" class="w-4 h-4"></i>
-              <span>Subscribe Now</span>
-            </button>
-          `}
+          <div class="pt-2 border-t border-slate-700/50">
+            ${isAllowed ? `
+              <div class="grid grid-cols-2 gap-2">
+                <a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium rounded-lg transition-colors">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                  <span>View</span>
+                </a>
+                <a href="${directDownloadUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors shadow-sm">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>Download</span>
+                </a>
+              </div>
+            ` : `
+              <button onclick="openModal()" class="w-full py-2 px-3 bg-slate-700/60 hover:bg-slate-700 border border-slate-600/50 text-amber-400 font-medium text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                <span>Unlock Full PDF</span>
+              </button>
+            `}
+          </div>
         `;
-
-        sheetsGrid.appendChild(card);
+        grid.appendChild(card);
       });
 
       lucide.createIcons();
     }
 
-    // ============================================================
-    // TABLE OF CONTENTS (A-Z) LOGIC
-    // ============================================================
     function openTocModal() {
-      const tocModal = document.getElementById('tocModal');
+      const modal = document.getElementById('tocModal');
       document.getElementById('tocFilterInput').value = '';
       document.getElementById('tocTotalCount').innerText = allFiles.length;
       renderTocList();
-      tocModal.classList.remove('hidden');
+      modal.classList.remove('hidden');
       document.getElementById('tocFilterInput').focus();
     }
 
@@ -518,82 +583,41 @@
     }
 
     function renderTocList() {
-      const tocList = document.getElementById('tocList');
+      const container = document.getElementById('tocList');
       const filter = document.getElementById('tocFilterInput').value.trim().toLowerCase();
+      const sorted = getFilteredFiles();
+      const list = filter ? sorted.filter(f => f.name.toLowerCase().includes(filter)) : sorted;
 
-      // Sort: Free sheets first, then A-Z
-      const sortedFiles = [...allFiles].sort((a, b) => {
-        const aIsFree = a.name.trim().toUpperCase().includes("FREE");
-        const bIsFree = b.name.trim().toUpperCase().includes("FREE");
-
-        if (aIsFree && !bIsFree) return -1;
-        if (!aIsFree && bIsFree) return 1;
-
-        const nameA = a.name.replace(/\.[^/.]+$/, "").toLowerCase();
-        const nameB = b.name.replace(/\.[^/.]+$/, "").toLowerCase();
-        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
-      });
-
-      const filtered = filter 
-        ? sortedFiles.filter(f => f.name.toLowerCase().includes(filter))
-        : sortedFiles;
-
-      if (filtered.length === 0) {
-        tocList.innerHTML = `<div class="py-8 text-center text-xs text-slate-400">No sheet music found matching "${filter}".</div>`;
+      if (list.length === 0) {
+        container.innerHTML = `<div class="py-8 text-center text-xs text-slate-400">No sheet music found matching "${sanitizeText(filter)}".</div>`;
         return;
       }
 
-      tocList.innerHTML = filtered.map((file, index) => {
-        const cleanTitle = file.name.replace(/\.[^/.]+$/, "");
-        const isFree = file.name.trim().toUpperCase().includes("FREE");
+      container.innerHTML = list.map((file, index) => {
+        const title = file.name.replace(/\.[^/.]+$/, "");
+        const isFree = file.name.toUpperCase().includes("FREE");
         const isAllowed = isSubscriber || isFree;
         const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
 
         return `
-          <div class="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-slate-700/40 rounded-lg transition-colors group">
+          <div class="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-slate-700/40 rounded-lg transition-colors">
             <div class="flex items-center gap-3 min-w-0">
               <span class="text-[11px] font-mono text-slate-500 w-6 text-right shrink-0">${index + 1}.</span>
-              <span class="text-slate-200 font-medium truncate text-xs sm:text-sm group-hover:text-white" title="${file.name}">
-                ${cleanTitle}
+              <span class="text-slate-200 font-medium truncate text-xs sm:text-sm" title="${sanitizeText(file.name)}">
+                ${sanitizeText(title)}
               </span>
             </div>
             
             <div class="flex items-center gap-2 shrink-0">
-              ${isFree ? `
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-md">Free</span>
-              ` : `
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 ${isSubscriber ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'} rounded-md">
-                  ${isSubscriber ? 'Subscribed' : 'Locked'}
-                </span>
-              `}
-
               ${isAllowed ? `
-                <div class="flex items-center gap-1">
-                  <a 
-                    href="${file.webViewLink}" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition-colors"
-                    title="View PDF"
-                  >
-                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                  </a>
-                  <a 
-                    href="${directDownloadUrl}" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm"
-                    title="Direct Download PDF"
-                  >
-                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  </a>
-                </div>
+                <a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition-colors" title="View Preview">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                </a>
+                <a href="${directDownloadUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm" title="Download PDF">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                </a>
               ` : `
-                <button 
-                  onclick="closeTocModal(); openModal();" 
-                  class="p-1.5 bg-slate-700 hover:bg-slate-650 text-amber-400 rounded-md transition-colors cursor-pointer"
-                  title="Unlock Sheet"
-                >
+                <button onclick="closeTocModal(); openModal();" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-amber-400 rounded-md transition-colors" title="Unlock Sheet">
                   <i data-lucide="lock" class="w-3.5 h-3.5"></i>
                 </button>
               `}
@@ -605,7 +629,6 @@
       lucide.createIcons();
     }
 
-    // Modal Handlers
     function openModal() {
       document.getElementById('loginModal').classList.remove('hidden');
       warmUpAppsScript();
@@ -617,12 +640,17 @@
       document.getElementById('loginError').classList.add('hidden');
     }
 
+    function handleBackdropClick(e, modalId) {
+      if (e.target.id === modalId) {
+        if (modalId === 'tocModal') closeTocModal();
+        if (modalId === 'loginModal') closeModal();
+      }
+    }
+
     function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('emailInput').value.trim();
-      if (email) {
-        verifySubscriberEmail(email);
-      }
+      if (email) verifySubscriberEmail(email);
     }
 
     function handleLogout() {
@@ -630,16 +658,21 @@
       localStorage.removeItem('user_subscriber_email');
       updateStatusUI('');
       renderSheets(getFilteredFiles());
+      displayRecentBatch();
       if (!document.getElementById('tocModal').classList.contains('hidden')) {
         renderTocList();
       }
     }
 
-    document.getElementById('emailInput').addEventListener('focus', warmUpAppsScript, { once: true });
-
-    document.getElementById('searchInput').addEventListener('input', () => {
-      renderSheets(getFilteredFiles());
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeTocModal();
+      }
     });
+
+    document.getElementById('emailInput').addEventListener('focus', warmUpAppsScript, { once: true });
+    document.getElementById('searchInput').addEventListener('input', () => renderSheets(getFilteredFiles()));
 
     init();
   </script>
