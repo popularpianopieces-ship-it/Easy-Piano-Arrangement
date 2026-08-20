@@ -101,14 +101,14 @@
         </span>
       </div>
 
-      <!-- 5-Item Static Slot Container -->
+      <!-- 5-Item Container -->
       <div id="recentItemsContainer" class="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 text-xs w-full transition-opacity duration-300">
         <!-- 5 Titles Injected Here -->
       </div>
 
       <!-- Page Indicator Dots -->
       <div id="recentPaginationDots" class="flex items-center gap-1 shrink-0">
-        <!-- Dots injected here -->
+        <!-- Dots Injected Here -->
       </div>
     </div>
   </div>
@@ -229,18 +229,15 @@
     let recentTimer = null;
     let isSubscriber = false;
 
-    // Track downloads to Google Apps Script
+    // Reliable GET Download Tracker
     function trackDownload(fileId, fileName) {
       const savedEmail = localStorage.getItem('user_subscriber_email');
       const userType = isSubscriber && savedEmail ? `Subscriber (${savedEmail})` : "Guest";
       
-      const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(fileName)}&userType=${encodeURIComponent(userType)}`;
+      const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(fileName)}&userType=${encodeURIComponent(userType)}&t=${Date.now()}`;
       
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(logUrl);
-      } else {
-        fetch(logUrl, { mode: 'no-cors' }).catch(() => {});
-      }
+      const img = new Image();
+      img.src = logUrl;
     }
 
     // Permanent visit counter
