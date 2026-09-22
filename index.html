@@ -9,7 +9,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between selection:bg-indigo-500 selection:text-white pb-16 sm:pb-0">
 
   <!-- Navigation / Header -->
   <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30 transition-all">
@@ -33,16 +33,16 @@
           </div>
         </div>
 
-        <!-- Mobile Floating Subscribe Link -->
+        <!-- Mobile Floating Ko-fi Buy Pass Link -->
         <a 
-          id="mobileSubscribeBtn"
-          href="https://www.facebook.com/popularpianopieces/subscribe/" 
+          id="mobileKofiBtn"
+          href="https://ko-fi.com/s/a39b033712" 
           target="_blank" 
           rel="noopener noreferrer"
           class="md:hidden bg-gradient-to-r from-amber-500 to-indigo-600 text-slate-950 font-bold text-xs uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md active:scale-95"
         >
           <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
-          <span>Join</span>
+          <span>Get All</span>
         </a>
       </div>
 
@@ -59,23 +59,23 @@
           <span>Table of Contents</span>
         </button>
 
-        <!-- User Status Badge -->
+        <!-- User Access Status Badge -->
         <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-2 rounded-lg text-xs font-medium">
           <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
           <span id="userStatusText" class="text-slate-300">Guest Access</span>
-          <button id="loginBtn" onclick="openModal()" class="ml-1 text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer">Log In</button>
+          <button id="loginBtn" onclick="openModal()" class="ml-1 text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer">Enter Pass Email</button>
         </div>
 
-        <!-- Desktop Subscribe Button -->
+        <!-- Desktop Ko-fi All-Access Pass Button -->
         <a 
-          id="headerSubscribeBtn" 
-          href="https://www.facebook.com/popularpianopieces/subscribe/" 
+          id="headerKofiBtn" 
+          href="https://ko-fi.com/s/a39b033712" 
           target="_blank" 
           rel="noopener noreferrer"
           class="hidden md:inline-flex bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider py-2 px-3.5 rounded-lg shadow-lg shadow-indigo-500/20 items-center gap-1.5 border border-amber-300/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
         >
-          <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
-          <span>Subscribe Now</span>
+          <i data-lucide="download-cloud" class="w-3.5 h-3.5 fill-slate-950"></i>
+          <span>Download All (1-Time)</span>
         </a>
 
         <!-- Search Input -->
@@ -131,6 +131,26 @@
     </div>
   </main>
 
+  <!-- Guest Floating Mobile 1-Time Download Bar -->
+  <div id="guestStickyBar" class="fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-indigo-500/30 backdrop-blur-md z-40 py-2.5 px-4 flex items-center justify-between sm:hidden shadow-2xl transition-transform duration-300">
+    <div class="flex flex-col">
+      <span class="text-xs font-bold text-white flex items-center gap-1">
+        <i data-lucide="download-cloud" class="w-3.5 h-3.5 text-amber-400"></i>
+        Get Complete Archive
+      </span>
+      <span class="text-[10px] text-slate-400"><span id="guestBarCount">All</span> sheets • Pay 1-Time</span>
+    </div>
+    <a 
+      id="stickyKofiBtn"
+      href="https://ko-fi.com/s/a39b033712" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="bg-gradient-to-r from-amber-500 to-indigo-600 text-slate-950 font-bold text-xs uppercase px-3.5 py-1.5 rounded-lg shadow-md active:scale-95 transition-all"
+    >
+      Download All
+    </a>
+  </div>
+
   <!-- Footer Area -->
   <footer class="py-6 border-t border-slate-800 bg-slate-950/40 text-center text-xs text-slate-500">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -178,39 +198,40 @@
     </div>
   </div>
 
-  <!-- Dual-Action Subscriber & Conversion Modal -->
+  <!-- Ko-fi One-Time Access Modal -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'loginModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-7 w-full max-w-md shadow-2xl relative">
       <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <!-- Section 1: Subscribe Conversion Card -->
+      <!-- Section 1: Ko-fi 1-Time Purchase Option -->
       <div class="text-center pb-5 border-b border-slate-700/70">
         <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-amber-500/30">
-          <i data-lucide="sparkles" class="w-6 h-6"></i>
+          <i data-lucide="download-cloud" class="w-6 h-6"></i>
         </div>
-        <h3 class="text-lg sm:text-xl font-bold text-white">Unlock All Piano Sheets</h3>
+        <h3 class="text-lg sm:text-xl font-bold text-white">Download Complete Collection</h3>
         <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-          Subscribe on Facebook for instant access to our complete <span id="modalDynamicSheetCount" class="font-semibold text-amber-400">all</span> arrangement library and regular releases!
+          Get lifetime access to download all <span id="modalDynamicSheetCount" class="font-semibold text-amber-400">all</span> piano sheets at once with a single 1-time payment on Ko-fi.
         </p>
 
         <a 
-          href="https://www.facebook.com/popularpianopieces/subscribe/" 
+          id="modalKofiBtn"
+          href="https://ko-fi.com/s/a39b033712" 
           target="_blank" 
           rel="noopener noreferrer"
           class="mt-4 w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
         >
           <i data-lucide="sparkles" class="w-4 h-4 fill-slate-950"></i>
-          <span>Subscribe on Facebook</span>
+          <span>Pay 1-Time on Ko-fi</span>
         </a>
       </div>
 
-      <!-- Section 2: Existing Subscriber Verification -->
+      <!-- Section 2: Already Paid Verification -->
       <div class="pt-5">
         <p class="text-xs font-semibold text-slate-300 mb-2.5 flex items-center gap-1.5">
           <i data-lucide="user-check" class="w-4 h-4 text-indigo-400"></i>
-          <span>Already a Subscriber? Log In Below:</span>
+          <span>Already purchased? Enter your email:</span>
         </p>
 
         <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
@@ -219,13 +240,13 @@
               type="email" 
               id="emailInput" 
               required 
-              placeholder="Enter your subscriber email..." 
+              placeholder="Enter your Ko-fi / buyer email..." 
               class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 border border-red-500/20 p-2.5 rounded-lg">
-            Email not found in subscriber list. Please check spelling or subscribe above.
+            Email not found in verified buyer records. Please check your email or purchase above on Ko-fi.
           </div>
 
           <button 
@@ -233,7 +254,7 @@
             id="verifySubmitBtn" 
             class="w-full py-2 px-4 bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white font-medium text-xs rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
           >
-            <span>Verify & Unlock</span>
+            <span>Verify & Unlock Library</span>
           </button>
         </form>
       </div>
@@ -242,21 +263,35 @@
   </div>
 
   <script>
+    // ============================================================
+    // CONFIGURATION
+    // ============================================================
     const API_KEY = "AIzaSyBybDa4zqq5ReVVvU3jp9saRO8rC_hSDDc";
     const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC63XU970BnSxqiVcSORO9O5cSJ1dyqsv4Jps2uffC9THoApU-PdKNeVj4mwi-fLzR/exec";
-    const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
+    
+    // Direct Ko-fi Digital Product / All-Access Link
+    const KOFI_URL = "https://ko-fi.com/s/a39b033712";
+    // ============================================================
 
     let allFiles = [];
     let recentFilesList = [];
     let recentBatchIndex = 0;
     let recentTimer = null;
-    let isSubscriber = false;
+    let isFullAccess = false;
+
+    // Apply Ko-fi URLs across links
+    function applyKofiLinks() {
+      ['mobileKofiBtn', 'headerKofiBtn', 'stickyKofiBtn', 'modalKofiBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.href = KOFI_URL;
+      });
+    }
 
     // GET Download Tracker
     function trackDownload(fileId, fileName) {
-      const savedEmail = localStorage.getItem('user_subscriber_email');
-      const userType = isSubscriber && savedEmail ? `Subscriber (${savedEmail})` : "Guest";
+      const savedEmail = localStorage.getItem('user_buyer_email');
+      const userType = isFullAccess && savedEmail ? `Full Access (${savedEmail})` : "Guest";
       
       const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(fileName)}&userType=${encodeURIComponent(userType)}&t=${Date.now()}`;
       
@@ -281,7 +316,7 @@
       if (APPS_SCRIPT_URL) fetch(`${APPS_SCRIPT_URL}?email=ping`).catch(() => {});
     }
 
-    async function verifySubscriberEmail(email, isAutoLogin = false) {
+    async function verifyBuyerEmail(email, isAutoLogin = false) {
       const errorDiv = document.getElementById('loginError');
       const submitBtn = document.getElementById('verifySubmitBtn');
       errorDiv.classList.add('hidden');
@@ -296,8 +331,8 @@
         const data = await response.json();
 
         if (data.isSubscriber) {
-          isSubscriber = true;
-          localStorage.setItem('user_subscriber_email', email);
+          isFullAccess = true;
+          localStorage.setItem('user_buyer_email', email);
           updateStatusUI(email);
           if (!isAutoLogin) closeModal();
           renderSheets(getFilteredFiles());
@@ -306,7 +341,7 @@
           if (!isAutoLogin) {
             errorDiv.classList.remove('hidden');
           } else {
-            localStorage.removeItem('user_subscriber_email');
+            localStorage.removeItem('user_buyer_email');
           }
         }
       } catch (err) {
@@ -317,41 +352,44 @@
       } finally {
         if (!isAutoLogin && submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = `<span>Verify & Unlock</span>`;
+          submitBtn.innerHTML = `<span>Verify & Unlock Library</span>`;
         }
       }
     }
 
     function checkSavedLogin() {
-      const savedEmail = localStorage.getItem('user_subscriber_email');
-      if (savedEmail) verifySubscriberEmail(savedEmail, true);
+      const savedEmail = localStorage.getItem('user_buyer_email');
+      if (savedEmail) verifyBuyerEmail(savedEmail, true);
     }
 
     function updateStatusUI(email) {
       const statusDot = document.getElementById('statusDot');
       const statusText = document.getElementById('userStatusText');
       const loginBtn = document.getElementById('loginBtn');
-      const headerSubBtn = document.getElementById('headerSubscribeBtn');
-      const mobileSubBtn = document.getElementById('mobileSubscribeBtn');
+      const headerKofiBtn = document.getElementById('headerKofiBtn');
+      const mobileKofiBtn = document.getElementById('mobileKofiBtn');
+      const guestStickyBar = document.getElementById('guestStickyBar');
 
-      if (isSubscriber) {
+      if (isFullAccess) {
         statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50";
-        statusText.innerText = `Subscriber (${email})`;
+        statusText.innerText = `Full Access (${email})`;
         statusText.className = "text-emerald-400 font-semibold";
         loginBtn.innerText = "Log Out";
         loginBtn.onclick = handleLogout;
 
-        if (headerSubBtn) headerSubBtn.classList.add('hidden');
-        if (mobileSubBtn) mobileSubBtn.classList.add('hidden');
+        if (headerKofiBtn) headerKofiBtn.classList.add('hidden');
+        if (mobileKofiBtn) mobileKofiBtn.classList.add('hidden');
+        if (guestStickyBar) guestStickyBar.classList.add('hidden');
       } else {
         statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
         statusText.innerText = "Guest Access";
         statusText.className = "text-slate-300";
-        loginBtn.innerText = "Log In";
+        loginBtn.innerText = "Enter Pass Email";
         loginBtn.onclick = openModal;
 
-        if (headerSubBtn) headerSubBtn.classList.remove('hidden');
-        if (mobileSubBtn) mobileSubBtn.classList.remove('hidden');
+        if (headerKofiBtn) headerKofiBtn.classList.remove('hidden');
+        if (mobileKofiBtn) mobileKofiBtn.classList.remove('hidden');
+        if (guestStickyBar) guestStickyBar.classList.remove('hidden');
       }
     }
 
@@ -388,6 +426,7 @@
       const countEl = document.getElementById('sheetCountNumber');
       const containerEl = document.getElementById('dynamicSheetCount');
       const modalCountEl = document.getElementById('modalDynamicSheetCount');
+      const guestBarCount = document.getElementById('guestBarCount');
 
       if (countEl && containerEl) {
         countEl.innerText = count.toLocaleString();
@@ -395,6 +434,9 @@
       }
       if (modalCountEl) {
         modalCountEl.innerText = `${count.toLocaleString()}+`;
+      }
+      if (guestBarCount) {
+        guestBarCount.innerText = `${count.toLocaleString()}+`;
       }
     }
 
@@ -448,7 +490,7 @@
         container.innerHTML = currentBatch.map(file => {
           const title = file.name.replace(/\.[^/.]+$/, "");
           const isFree = file.name.toUpperCase().includes("FREE");
-          const isAllowed = isSubscriber || isFree;
+          const isAllowed = isFullAccess || isFree;
           const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
           const targetUrl = isAllowed ? directDownloadUrl : file.webViewLink;
 
@@ -489,8 +531,15 @@
     }
 
     async function init() {
+      applyKofiLinks();
       checkSavedLogin();
       updateVisitCount();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryParam = urlParams.get('q');
+      if (queryParam) {
+        document.getElementById('searchInput').value = queryParam;
+      }
 
       const statusMessage = document.getElementById('statusMessage');
       const sheetsGrid = document.getElementById('sheetsGrid');
@@ -540,6 +589,19 @@
       return temp.innerHTML;
     }
 
+    function copySongLink(cleanTitle, btnElement) {
+      const url = `${window.location.origin}${window.location.pathname}?q=${encodeURIComponent(cleanTitle)}`;
+      navigator.clipboard.writeText(url).then(() => {
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i>`;
+        lucide.createIcons();
+        setTimeout(() => {
+          btnElement.innerHTML = originalHtml;
+          lucide.createIcons();
+        }, 1500);
+      });
+    }
+
     function renderSheets(files) {
       const grid = document.getElementById('sheetsGrid');
       grid.innerHTML = '';
@@ -552,7 +614,7 @@
       files.forEach((file) => {
         const title = file.name.replace(/\.[^/.]+$/, "");
         const isFree = file.name.toUpperCase().includes("FREE");
-        const isAllowed = isSubscriber || isFree;
+        const isAllowed = isFullAccess || isFree;
         const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
         const previewUrl = file.thumbnailLink ? file.thumbnailLink.replace(/=s\d+$/, '=w600-h800') : null;
 
@@ -580,10 +642,19 @@
                   <span class="text-xs">Sheet Preview</span>
                 </div>
               `}
-              <div class="absolute top-2 right-2">
+              
+              <!-- Badges Container -->
+              <div class="absolute top-2 right-2 flex items-center gap-1.5">
+                <button 
+                  onclick="copySongLink('${title.replace(/'/g, "\\'")}', this)" 
+                  class="p-1 bg-slate-900/80 hover:bg-slate-950 text-slate-300 hover:text-white rounded-md backdrop-blur border border-slate-700/60 transition-colors shadow"
+                  title="Copy direct link to this song"
+                >
+                  <i data-lucide="share-2" class="w-3 h-3"></i>
+                </button>
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow flex items-center gap-1 ${isAllowed ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'}">
                   <i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3 h-3"></i>
-                  ${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Subscribers'}
+                  ${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Lifetime Pass'}
                 </span>
               </div>
             </div>
@@ -612,8 +683,8 @@
               </div>
             ` : `
               <button onclick="openModal()" class="w-full py-2 px-3 bg-gradient-to-r from-amber-500/90 to-indigo-600/90 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
-                <span>Subscribe Now</span>
+                <i data-lucide="download-cloud" class="w-3.5 h-3.5 fill-slate-950"></i>
+                <span>Get All Sheets (1-Time)</span>
               </button>
             `}
           </div>
@@ -651,7 +722,7 @@
       container.innerHTML = list.map((file, index) => {
         const title = file.name.replace(/\.[^/.]+$/, "");
         const isFree = file.name.toUpperCase().includes("FREE");
-        const isAllowed = isSubscriber || isFree;
+        const isAllowed = isFullAccess || isFree;
         const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
 
         return `
@@ -679,7 +750,7 @@
                   <i data-lucide="download" class="w-3.5 h-3.5"></i>
                 </a>
               ` : `
-                <button onclick="closeTocModal(); openModal();" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-amber-400 rounded-md transition-colors" title="Subscribe to Unlock">
+                <button onclick="closeTocModal(); openModal();" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-amber-400 rounded-md transition-colors" title="Get All Access">
                   <i data-lucide="lock" class="w-3.5 h-3.5"></i>
                 </button>
               `}
@@ -712,12 +783,12 @@
     function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('emailInput').value.trim();
-      if (email) verifySubscriberEmail(email);
+      if (email) verifyBuyerEmail(email);
     }
 
     function handleLogout() {
-      isSubscriber = false;
-      localStorage.removeItem('user_subscriber_email');
+      isFullAccess = false;
+      localStorage.removeItem('user_buyer_email');
       updateStatusUI('');
       renderSheets(getFilteredFiles());
       displayRecentBatch();
