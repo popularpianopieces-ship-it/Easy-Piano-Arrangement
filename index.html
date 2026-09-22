@@ -8,12 +8,34 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Continuous Seamless Marquee Scrolling to the Right */
+    @keyframes marquee-scroll-right {
+      0% {
+        transform: translateX(-50%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
+    }
+
+    .marquee-track-right {
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll-right 30s linear infinite;
+    }
+
+    .marquee-container:hover .marquee-track-right {
+      animation-play-state: paused;
+    }
+  </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between selection:bg-indigo-500 selection:text-white pb-20 sm:pb-0">
 
   <!-- Navigation / Header -->
-  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+  <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur-md sticky top-0 z-30 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
       
       <!-- Brand Logo, Title & Dynamic Library Sheet Counter -->
       <div class="flex items-center justify-between w-full md:w-auto gap-3">
@@ -26,14 +48,13 @@
               <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">Piano Sheet Music</h1>
               <span id="visitCount" class="font-mono text-xs text-slate-500 font-semibold select-none"></span>
             </div>
-            <!-- Dynamic Count Injected Here -->
             <p id="libraryStatsSubheading" class="text-xs text-slate-400">
               Popular Piano Pieces Collection <span id="dynamicSheetCount" class="text-indigo-400 font-medium hidden">• <span id="sheetCountNumber">0</span> arrangements</span>
             </p>
           </div>
         </div>
 
-        <!-- Mobile Floating Action Pill (Dual Choice Trigger) -->
+        <!-- Mobile Floating Action Pill -->
         <button 
           id="mobileUnlockTriggerBtn"
           onclick="openModal()" 
@@ -74,7 +95,7 @@
           title="Download all sheets at once - Pay via Ko-fi"
         >
           <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
-          <span>1-Time Download</span>
+          <span>1-Time via Ko-fi</span>
         </a>
 
         <!-- Desktop Action 2: Facebook Subscription via Meta -->
@@ -104,13 +125,13 @@
     </div>
   </header>
 
-  <!-- 48-Hour Recent Releases Rotator Banner -->
-  <div id="recentBannerSection" class="bg-slate-950/60 border-b border-indigo-900/30 backdrop-blur-sm hidden" onmouseenter="pauseRecentRotation()" onmouseleave="startRecentRotation()">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
+  <!-- Section 1: 48-Hour Recent Releases Rotator Banner -->
+  <div id="recentBannerSection" class="relative z-20 bg-slate-950/95 border-b border-indigo-900/40 py-2.5 hidden" onmouseenter="pauseRecentRotation()" onmouseleave="startRecentRotation()">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-3">
       
       <!-- Left Tag -->
       <div class="flex items-center gap-2 shrink-0">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-bold text-[11px] uppercase tracking-wide">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold text-[11px] uppercase tracking-wide">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
           Added in Last 48 Hours
         </span>
@@ -128,7 +149,69 @@
     </div>
   </div>
 
-  <!-- Main Content -->
+  <!-- Section 2: Infinitely Scrolling Features Banner (Scrolling Right) -->
+  <div class="marquee-container relative z-10 overflow-hidden bg-slate-900/90 border-b border-slate-800/80 py-2.5 text-xs select-none">
+    <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
+    <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
+
+    <div class="marquee-track-right flex items-center gap-8 text-slate-200">
+      
+      <!-- Track Part 1 -->
+      <div class="flex items-center gap-3 shrink-0">
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold uppercase tracking-wider text-[10px]">
+          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i> Features
+        </span>
+        <span class="font-medium text-slate-300">Easy to Advanced Classical Pieces</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Traditional Songs</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Old Pop Hits</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">New Hits</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Christmas</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Worship</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Movie Themes</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Disney</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Piano Songbooks and more</span>
+      </div>
+
+      <span class="text-amber-400 font-bold shrink-0">✦</span>
+
+      <!-- Track Part 2 (Continuous Duplicate) -->
+      <div class="flex items-center gap-3 shrink-0" aria-hidden="true">
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold uppercase tracking-wider text-[10px]">
+          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i> Features
+        </span>
+        <span class="font-medium text-slate-300">Easy to Advanced Classical Pieces</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Traditional Songs</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Old Pop Hits</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">New Hits</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Christmas</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Worship</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Movie Themes</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Disney</span>
+        <span class="text-indigo-400">•</span>
+        <span class="font-medium text-slate-300">Piano Songbooks and more</span>
+      </div>
+
+      <span class="text-amber-400 font-bold shrink-0">✦</span>
+
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-grow w-full">
     
     <!-- Status / Loading Indicator -->
@@ -345,7 +428,6 @@
     let recentTimer = null;
     let isFullAccess = false;
 
-    // Apply links dynamically
     function applyExternalLinks() {
       ['headerKofiBtn', 'stickyKofiBtn', 'modalKofiBtn'].forEach(id => {
         const el = document.getElementById(id);
@@ -357,7 +439,6 @@
       });
     }
 
-    // GET Download Tracker
     function trackDownload(fileId, fileName) {
       const savedEmail = localStorage.getItem('user_buyer_email');
       const userType = isFullAccess && savedEmail ? `Member (${savedEmail})` : "Guest";
@@ -368,7 +449,6 @@
       img.src = logUrl;
     }
 
-    // Permanent visit counter
     async function updateVisitCount() {
       const el = document.getElementById('visitCount');
       if (!el) return;
@@ -399,7 +479,6 @@
         const response = await fetch(`${APPS_SCRIPT_URL}?email=${encodeURIComponent(email)}`);
         const data = await response.json();
 
-        // Checks if email exists in your sheet
         if (data.isSubscriber) {
           isFullAccess = true;
           localStorage.setItem('user_buyer_email', email);
@@ -599,57 +678,47 @@
       if (recentTimer) clearInterval(recentTimer);
     }
 
-    async function init() {
-      applyExternalLinks();
-      checkSavedLogin();
-      updateVisitCount();
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const queryParam = urlParams.get('q');
-      if (queryParam) {
-        document.getElementById('searchInput').value = queryParam;
-      }
-
-      const statusMessage = document.getElementById('statusMessage');
-      const sheetsGrid = document.getElementById('sheetsGrid');
-
-      try {
-        allFiles = await scanFolderDeep(FOLDER_ID);
-
-        if (allFiles.length === 0) {
-          statusMessage.innerHTML = `<p class="text-slate-400">No sheet music files found.</p>`;
-          return;
-        }
-
-        updateDynamicCounts();
-        statusMessage.classList.add('hidden');
-        sheetsGrid.classList.remove('hidden');
-        renderSheets(getFilteredFiles());
-        initRecentRotator();
-      } catch (error) {
-        statusMessage.innerHTML = `
-          <div class="bg-red-500/10 text-red-400 border border-red-500/30 p-4 rounded-xl max-w-md text-left">
-            <p class="text-sm font-semibold">Error loading library:</p>
-            <p class="text-xs mt-1 text-slate-300">${error.message}</p>
-          </div>
-        `;
-      }
-    }
-
+    // ============================================================
+    // 4 FREE SHEETS EVERY 100 SONGS LOGIC
+    // ============================================================
     function getFilteredFiles() {
       const term = document.getElementById('searchInput').value.trim().toLowerCase();
-      const list = term ? allFiles.filter(f => f.name.toLowerCase().includes(term)) : allFiles;
+      let list = term ? allFiles.filter(f => f.name.toLowerCase().includes(term)) : allFiles;
 
-      return [...list].sort((a, b) => {
-        const aFree = a.name.toUpperCase().includes("FREE");
-        const bFree = b.name.toUpperCase().includes("FREE");
-        if (aFree && !bFree) return -1;
-        if (!aFree && bFree) return 1;
+      const freeFiles = [];
+      const lockedFiles = [];
 
+      list.forEach(file => {
+        if (file.name.toUpperCase().includes("FREE")) {
+          freeFiles.push(file);
+        } else {
+          lockedFiles.push(file);
+        }
+      });
+
+      const alphabetSort = (a, b) => {
         const nameA = a.name.replace(/\.[^/.]+$/, "").toLowerCase();
         const nameB = b.name.replace(/\.[^/.]+$/, "").toLowerCase();
         return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
-      });
+      };
+
+      freeFiles.sort(alphabetSort);
+      lockedFiles.sort(alphabetSort);
+
+      const result = [];
+      let freeIdx = 0;
+      let lockedIdx = 0;
+
+      while (freeIdx < freeFiles.length || lockedIdx < lockedFiles.length) {
+        for (let i = 0; i < 4 && freeIdx < freeFiles.length; i++) {
+          result.push(freeFiles[freeIdx++]);
+        }
+        for (let i = 0; i < 96 && lockedIdx < lockedFiles.length; i++) {
+          result.push(lockedFiles[lockedIdx++]);
+        }
+      }
+
+      return result;
     }
 
     function sanitizeText(str) {
@@ -676,7 +745,7 @@
       grid.innerHTML = '';
 
       if (files.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 text-sm">No sheet music matching your query.</div>`;
+        grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 text-sm">No sheet music found matching your criteria.</div>`;
         return;
       }
 
@@ -875,6 +944,43 @@
 
     document.getElementById('emailInput').addEventListener('focus', warmUpAppsScript, { once: true });
     document.getElementById('searchInput').addEventListener('input', () => renderSheets(getFilteredFiles()));
+
+    async function init() {
+      applyExternalLinks();
+      checkSavedLogin();
+      updateVisitCount();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryParam = urlParams.get('q');
+      if (queryParam) {
+        document.getElementById('searchInput').value = queryParam;
+      }
+
+      const statusMessage = document.getElementById('statusMessage');
+      const sheetsGrid = document.getElementById('sheetsGrid');
+
+      try {
+        allFiles = await scanFolderDeep(FOLDER_ID);
+
+        if (allFiles.length === 0) {
+          statusMessage.innerHTML = `<p class="text-slate-400">No sheet music files found.</p>`;
+          return;
+        }
+
+        updateDynamicCounts();
+        statusMessage.classList.add('hidden');
+        sheetsGrid.classList.remove('hidden');
+        renderSheets(getFilteredFiles());
+        initRecentRotator();
+      } catch (error) {
+        statusMessage.innerHTML = `
+          <div class="bg-red-500/10 text-red-400 border border-red-500/30 p-4 rounded-xl max-w-md text-left">
+            <p class="text-sm font-semibold">Error loading library:</p>
+            <p class="text-xs mt-1 text-slate-300">${error.message}</p>
+          </div>
+        `;
+      }
+    }
 
     init();
   </script>
