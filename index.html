@@ -10,7 +10,6 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Continuous Seamless Marquee Scrolling to the Right */
     @keyframes marquee-scroll-right {
       0% {
         transform: translateX(-50%);
@@ -128,38 +127,26 @@
   <!-- Section 1: 48-Hour Recent Releases Rotator Banner -->
   <div id="recentBannerSection" class="relative z-20 bg-slate-950/95 border-b border-indigo-900/40 py-2.5 hidden" onmouseenter="pauseRecentRotation()" onmouseleave="startRecentRotation()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-3">
-      
-      <!-- Left Tag -->
       <div class="flex items-center gap-2 shrink-0">
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold text-[11px] uppercase tracking-wide">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
           Added in Last 48 Hours
         </span>
       </div>
-
-      <!-- 5-Item Container -->
-      <div id="recentItemsContainer" class="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 text-xs w-full transition-opacity duration-300">
-        <!-- 5 Titles Injected Here -->
-      </div>
-
-      <!-- Page Indicator Dots -->
-      <div id="recentPaginationDots" class="flex items-center gap-1 shrink-0">
-        <!-- Dots Injected Here -->
-      </div>
+      <div id="recentItemsContainer" class="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 text-xs w-full transition-opacity duration-300"></div>
+      <div id="recentPaginationDots" class="flex items-center gap-1 shrink-0"></div>
     </div>
   </div>
 
-  <!-- Section 2: Infinitely Scrolling Features Banner (Scrolling Right) -->
+  <!-- Section 2: Marquee Banner -->
   <div class="marquee-container relative z-10 overflow-hidden bg-slate-900/90 border-b border-slate-800/80 py-2.5 text-xs select-none">
     <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
     <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
 
     <div class="marquee-track-right flex items-center gap-8 text-slate-200">
-      
-      <!-- Track Part 1 -->
       <div class="flex items-center gap-3 shrink-0">
         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold uppercase tracking-wider text-[10px]">
-          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i> Features
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Features
         </span>
         <span class="font-medium text-slate-300">Easy to Advanced Classical Pieces</span>
         <span class="text-indigo-400">•</span>
@@ -179,13 +166,10 @@
         <span class="text-indigo-400">•</span>
         <span class="font-medium text-slate-300">Piano Songbooks and more</span>
       </div>
-
       <span class="text-amber-400 font-bold shrink-0">✦</span>
-
-      <!-- Track Part 2 (Continuous Duplicate) -->
       <div class="flex items-center gap-3 shrink-0" aria-hidden="true">
         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold uppercase tracking-wider text-[10px]">
-          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i> Features
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Features
         </span>
         <span class="font-medium text-slate-300">Easy to Advanced Classical Pieces</span>
         <span class="text-indigo-400">•</span>
@@ -205,28 +189,20 @@
         <span class="text-indigo-400">•</span>
         <span class="font-medium text-slate-300">Piano Songbooks and more</span>
       </div>
-
       <span class="text-amber-400 font-bold shrink-0">✦</span>
-
     </div>
   </div>
 
   <!-- Main Content Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-grow w-full">
-    
-    <!-- Status / Loading Indicator -->
     <div id="statusMessage" class="flex flex-col items-center justify-center py-24 text-center">
       <div class="animate-spin rounded-full h-10 w-10 border-2 border-indigo-500 border-t-transparent mb-4"></div>
       <p class="text-slate-400 text-sm font-medium">Scanning piano sheets archive...</p>
     </div>
-
-    <!-- Sheet Music Grid -->
-    <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden">
-      <!-- Cards rendered dynamically -->
-    </div>
+    <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden"></div>
   </main>
 
-  <!-- Guest Floating Mobile Dual Action Bar -->
+  <!-- Mobile Bar -->
   <div id="guestStickyBar" class="fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-indigo-500/30 backdrop-blur-md z-40 py-2.5 px-4 flex items-center justify-between sm:hidden shadow-2xl transition-transform duration-300">
     <div class="flex flex-col pr-2">
       <span class="text-xs font-bold text-white flex items-center gap-1">
@@ -259,7 +235,7 @@
     </div>
   </div>
 
-  <!-- Footer Area -->
+  <!-- Footer -->
   <footer class="py-6 border-t border-slate-800 bg-slate-950/40 text-center text-xs text-slate-500">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
       <span>Piano Sheet Music Library &copy; 2026</span>
@@ -270,8 +246,6 @@
   <!-- Table of Contents Modal -->
   <div id="tocModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'tocModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl relative">
-      
-      <!-- Modal Header -->
       <div class="flex items-center justify-between pb-4 border-b border-slate-700/80 mb-4 shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
@@ -287,7 +261,6 @@
         </button>
       </div>
 
-      <!-- Search in TOC -->
       <div class="relative mb-3 shrink-0">
         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
         <input 
@@ -299,10 +272,7 @@
         />
       </div>
 
-      <!-- Scrollable List -->
-      <div id="tocList" class="overflow-y-auto space-y-1.5 pr-1 divide-y divide-slate-700/40 text-sm">
-        <!-- Generated dynamically -->
-      </div>
+      <div id="tocList" class="overflow-y-auto space-y-1.5 pr-1 divide-y divide-slate-700/40 text-sm"></div>
     </div>
   </div>
 
@@ -321,10 +291,8 @@
         <p class="text-xs text-slate-300 mt-1">Unlock <span id="modalDynamicSheetCount" class="font-semibold text-amber-400">all</span> easy piano arrangements instantly:</p>
       </div>
 
-      <!-- Option 1 & 2 Cards Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-5 border-b border-slate-700/70">
-        
-        <!-- Option 1: Ko-fi 1-Time All Download -->
+        <!-- Option 1: Ko-fi -->
         <div class="bg-slate-900/80 border border-slate-700/80 hover:border-amber-400/50 rounded-xl p-4 flex flex-col justify-between transition-all">
           <div>
             <div class="flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
@@ -337,7 +305,7 @@
             </p>
           </div>
           <a 
-            id="modalKofiBtn"
+            id="modalKofiBtn" 
             href="https://ko-fi.com/s/a39b033712" 
             target="_blank" 
             rel="noopener noreferrer"
@@ -347,7 +315,7 @@
           </a>
         </div>
 
-        <!-- Option 2: Facebook Subscription via Meta -->
+        <!-- Option 2: Facebook Subscription -->
         <div class="bg-slate-900/80 border border-slate-700/80 hover:border-indigo-400/50 rounded-xl p-4 flex flex-col justify-between transition-all">
           <div>
             <div class="flex items-center gap-1.5 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
@@ -360,7 +328,7 @@
             </p>
           </div>
           <a 
-            id="modalFbSubBtn"
+            id="modalFbSubBtn" 
             href="https://www.facebook.com/popularpianopieces/subscribe/" 
             target="_blank" 
             rel="noopener noreferrer"
@@ -369,10 +337,8 @@
             <span>Pay to Meta (FB)</span>
           </a>
         </div>
-
       </div>
 
-      <!-- Section 3: Verification for Existing Subscribers / Buyers -->
       <div class="pt-4">
         <p class="text-xs font-semibold text-slate-300 mb-2 flex items-center gap-1.5">
           <i data-lucide="user-check" class="w-4 h-4 text-indigo-400"></i>
@@ -391,7 +357,7 @@
           </div>
 
           <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 border border-red-500/20 p-2 rounded-lg">
-            Email not found in verified subscriber or buyer records. Please check spelling or select an option above.
+            Email not found in verified subscriber records. Please check spelling or select an option above.
           </div>
 
           <button 
@@ -403,7 +369,6 @@
           </button>
         </form>
       </div>
-
     </div>
   </div>
 
@@ -415,10 +380,7 @@
     const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC63XU970BnSxqiVcSORO9O5cSJ1dyqsv4Jps2uffC9THoApU-PdKNeVj4mwi-fLzR/exec";
     
-    // Direct Ko-fi 1-Time All Download
     const KOFI_URL = "https://ko-fi.com/s/a39b033712";
-
-    // Facebook Subscription Page URL (Pay to Meta)
     const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
     // ============================================================
 
@@ -427,6 +389,7 @@
     let recentBatchIndex = 0;
     let recentTimer = null;
     let isFullAccess = false;
+    let userMembershipStatus = "guest"; // "guest", "active", "expired"
 
     function applyExternalLinks() {
       ['headerKofiBtn', 'stickyKofiBtn', 'modalKofiBtn'].forEach(id => {
@@ -439,11 +402,39 @@
       });
     }
 
+    function attemptDownload(event, fileId, fileName) {
+      const decodedTitle = decodeURIComponent(fileName || "");
+      const isFreeSheet = decodedTitle.toUpperCase().includes("FREE");
+
+      // Free sheets are always 100% exempt and never consume download balance
+      if (!isFreeSheet) {
+        const rawMax = localStorage.getItem('user_max_downloads');
+        if (rawMax !== null && rawMax !== "") {
+          const maxAllowed = parseInt(rawMax, 10);
+          const currentUsed = parseInt(localStorage.getItem('user_used_downloads') || "0", 10);
+
+          if (currentUsed >= maxAllowed) {
+            if (event) event.preventDefault();
+            alert(`You have reached your limit of ${maxAllowed} downloads.\n\nPlease subscribe on Facebook for unlimited access or get the complete archive on Ko-fi.`);
+            openModal();
+            return false;
+          }
+
+          // Increment locked download count locally
+          localStorage.setItem('user_used_downloads', (currentUsed + 1).toString());
+          updateStatusUI(localStorage.getItem('user_buyer_email') || "");
+        }
+      }
+
+      trackDownload(fileId, fileName);
+      return true;
+    }
+
     function trackDownload(fileId, fileName) {
       const savedEmail = localStorage.getItem('user_buyer_email');
       const userType = isFullAccess && savedEmail ? `Member (${savedEmail})` : "Guest";
       
-      const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(fileName)}&userType=${encodeURIComponent(userType)}&t=${Date.now()}`;
+      const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(fileName)}&userType=${encodeURIComponent(userType)}&email=${encodeURIComponent(savedEmail || '')}&t=${Date.now()}`;
       
       const img = new Image();
       img.src = logUrl;
@@ -476,21 +467,59 @@
       }
 
       try {
-        const response = await fetch(`${APPS_SCRIPT_URL}?email=${encodeURIComponent(email)}`);
+        const cleanEmail = email.trim().toLowerCase();
+        const response = await fetch(`${APPS_SCRIPT_URL}?email=${encodeURIComponent(cleanEmail)}&t=${Date.now()}`);
         const data = await response.json();
 
+        // 1. Subscription Expired (Column 3 date has passed)
+        if (data.isExpired) {
+          isFullAccess = false;
+          userMembershipStatus = "expired";
+          localStorage.removeItem('user_buyer_email');
+          localStorage.removeItem('user_member_status');
+          localStorage.removeItem('user_max_downloads');
+          localStorage.removeItem('user_used_downloads');
+          updateStatusUI(cleanEmail);
+
+          if (!isAutoLogin) {
+            errorDiv.innerText = `Your access ended on ${data.endDate || 'the scheduled date'}. Please renew to access.`;
+            errorDiv.classList.remove('hidden');
+          }
+          renderSheets(getFilteredFiles());
+          displayRecentBatch();
+          return;
+        }
+
+        // 2. Active Subscriber
         if (data.isSubscriber) {
           isFullAccess = true;
-          localStorage.setItem('user_buyer_email', email);
-          updateStatusUI(email);
+          userMembershipStatus = "active";
+          localStorage.setItem('user_buyer_email', cleanEmail);
+          localStorage.setItem('user_member_status', 'active');
+
+          // Check Column 4 (Max Downloads)
+          if (data.maxDownloads !== null && data.maxDownloads !== undefined && data.maxDownloads !== "") {
+            localStorage.setItem('user_max_downloads', data.maxDownloads.toString());
+            // Sync with actual count of non-free downloads from the Downloads sheet
+            localStorage.setItem('user_used_downloads', (data.usedDownloads || 0).toString());
+          } else {
+            localStorage.removeItem('user_max_downloads');
+            localStorage.removeItem('user_used_downloads');
+          }
+
+          updateStatusUI(cleanEmail);
           if (!isAutoLogin) closeModal();
           renderSheets(getFilteredFiles());
           displayRecentBatch();
         } else {
           if (!isAutoLogin) {
+            errorDiv.innerText = "Email not found in verified subscriber records. Please check spelling or select an option above.";
             errorDiv.classList.remove('hidden');
           } else {
             localStorage.removeItem('user_buyer_email');
+            localStorage.removeItem('user_member_status');
+            localStorage.removeItem('user_max_downloads');
+            localStorage.removeItem('user_used_downloads');
           }
         }
       } catch (err) {
@@ -508,6 +537,9 @@
 
     function checkSavedLogin() {
       const savedEmail = localStorage.getItem('user_buyer_email');
+      const savedStatus = localStorage.getItem('user_member_status');
+
+      if (savedStatus) userMembershipStatus = savedStatus;
       if (savedEmail) verifyBuyerEmail(savedEmail, true);
     }
 
@@ -522,7 +554,18 @@
 
       if (isFullAccess) {
         statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50";
-        statusText.innerText = `Full Access (${email})`;
+        
+        // Show remaining downloads if Column 4 has a limit
+        const rawMax = localStorage.getItem('user_max_downloads');
+        if (rawMax !== null && rawMax !== "") {
+          const maxAllowed = parseInt(rawMax, 10);
+          const used = parseInt(localStorage.getItem('user_used_downloads') || "0", 10);
+          const remaining = Math.max(0, maxAllowed - used);
+          statusText.innerText = `Full Access (${email} • ${remaining}/${maxAllowed} downloads left)`;
+        } else {
+          statusText.innerText = `Full Access (${email} • Unlimited)`;
+        }
+
         statusText.className = "text-emerald-400 font-semibold";
         loginBtn.innerText = "Log Out";
         loginBtn.onclick = handleLogout;
@@ -533,8 +576,8 @@
         if (guestStickyBar) guestStickyBar.classList.add('hidden');
       } else {
         statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
-        statusText.innerText = "Guest Access";
-        statusText.className = "text-slate-300";
+        statusText.innerText = userMembershipStatus === "expired" ? "Subscription Expired" : "Guest Access";
+        statusText.className = userMembershipStatus === "expired" ? "text-red-400 font-medium" : "text-slate-300";
         loginBtn.innerText = "Log In";
         loginBtn.onclick = openModal;
 
@@ -647,7 +690,7 @@
               href="${targetUrl}" 
               target="_blank" 
               rel="noopener noreferrer" 
-              ${isAllowed ? `onclick="trackDownload('${file.id}', '${encodeURIComponent(title)}')"` : ''}
+              ${isAllowed ? `onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}'); return true;"` : ''}
               class="inline-flex items-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/70 hover:border-indigo-500/50 text-slate-200 hover:text-white px-2.5 py-1 rounded-md transition-all truncate max-w-[200px] sm:max-w-[220px]"
               title="${sanitizeText(title)}"
             >
@@ -678,9 +721,6 @@
       if (recentTimer) clearInterval(recentTimer);
     }
 
-    // ============================================================
-    // 4 FREE SHEETS EVERY 100 SONGS LOGIC
-    // ============================================================
     function getFilteredFiles() {
       const term = document.getElementById('searchInput').value.trim().toLowerCase();
       let list = term ? allFiles.filter(f => f.name.toLowerCase().includes(term)) : allFiles;
@@ -781,7 +821,6 @@
                 </div>
               `}
               
-              <!-- Badges Container -->
               <div class="absolute top-2 right-2 flex items-center gap-1.5">
                 <button 
                   onclick="copySongLink('${title.replace(/'/g, "\\'")}', this)" 
@@ -812,7 +851,7 @@
                   href="${directDownloadUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  onclick="trackDownload('${file.id}', '${encodeURIComponent(title)}')"
+                  onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')"
                   class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors shadow-sm"
                 >
                   <i data-lucide="download" class="w-3.5 h-3.5"></i>
@@ -881,7 +920,7 @@
                   href="${directDownloadUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  onclick="trackDownload('${file.id}', '${encodeURIComponent(title)}')"
+                  onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')"
                   class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm" 
                   title="Download PDF"
                 >
@@ -926,7 +965,11 @@
 
     function handleLogout() {
       isFullAccess = false;
+      userMembershipStatus = "guest";
       localStorage.removeItem('user_buyer_email');
+      localStorage.removeItem('user_member_status');
+      localStorage.removeItem('user_max_downloads');
+      localStorage.removeItem('user_used_downloads');
       updateStatusUI('');
       renderSheets(getFilteredFiles());
       displayRecentBatch();
