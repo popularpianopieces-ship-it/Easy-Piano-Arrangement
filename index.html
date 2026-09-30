@@ -73,7 +73,7 @@
           target="_blank" 
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-2 px-3 rounded-lg shadow-sm border border-emerald-400/30 active:scale-95 transition-all cursor-pointer"
-          title="Get 7-Day Trial Pass for $4 on Ko-fi"
+          title="Get 7-Day Access Pass for $4 on Ko-fi"
         >
           <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-200"></i>
           <span>$4 (7-Day Pass)</span>
@@ -419,7 +419,7 @@
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC63XU970BnSxqiVcSORO9O5cSJ1dyqsv4Jps2uffC9THoApU-PdKNeVj4mwi-fLzR/exec";
     
     // External Product URLs:
-    const KOFI_7DAY_TRIAL_URL = "https://ko-fi.com/s/4da63edf55"; // $4 for 7-Day Access Pass
+    const KOFI_7DAY_TRIAL_URL = "https://ko-fi.com/s/4da63edf55"; // $4 7-Day Access Pass
     const KOFI_ALL_ARCHIVE_URL = "https://ko-fi.com/s/a39b033712"; // 1-Time All Download
     const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
     // ============================================================
@@ -446,29 +446,14 @@
       });
     }
 
+    // Helper: Build a safe Google Drive download/view URL
+    function getSafeDownloadUrl(fileId) {
+      // Direct reliable view/download link that never triggers the uc?export block
+      return `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
+    }
+
     function attemptDownload(event, fileId, fileName) {
-      const decodedTitle = decodeURIComponent(fileName || "");
-      const isFreeSheet = decodedTitle.toUpperCase().includes("FREE");
-
-      // Free sheets are always 100% exempt from any quota limit
-      if (!isFreeSheet) {
-        const rawMax = localStorage.getItem('user_max_downloads');
-        if (rawMax !== null && rawMax !== "") {
-          const maxAllowed = parseInt(rawMax, 10);
-          const currentUsed = parseInt(localStorage.getItem('user_used_downloads') || "0", 10);
-
-          if (currentUsed >= maxAllowed) {
-            if (event) event.preventDefault();
-            alert(`You have reached your limit of ${maxAllowed} downloads.\n\nPlease renew with the $4 7-Day Pass or subscribe on Facebook for unlimited downloads.`);
-            openModal();
-            return false;
-          }
-
-          localStorage.setItem('user_used_downloads', (currentUsed + 1).toString());
-          updateStatusUI(localStorage.getItem('user_buyer_email') || "");
-        }
-      }
-
+      // Subscribers have 100% UNRESTRICTED downloads. No limits, no counting blocks.
       trackDownload(fileId, fileName);
       return true;
     }
@@ -520,8 +505,6 @@
           userMembershipStatus = "expired";
           localStorage.removeItem('user_buyer_email');
           localStorage.removeItem('user_member_status');
-          localStorage.removeItem('user_max_downloads');
-          localStorage.removeItem('user_used_downloads');
           updateStatusUI(cleanEmail);
 
           if (!isAutoLogin) {
@@ -533,20 +516,12 @@
           return;
         }
 
-        // 2. Active Subscriber / 7-Day Pass Holder
+        // 2. Active Subscriber / 7-Day Pass Holder -> Full Unrestricted Access
         if (data.isSubscriber) {
           isFullAccess = true;
           userMembershipStatus = "active";
           localStorage.setItem('user_buyer_email', cleanEmail);
           localStorage.setItem('user_member_status', 'active');
-
-          if (data.maxDownloads !== null && data.maxDownloads !== undefined && data.maxDownloads !== "") {
-            localStorage.setItem('user_max_downloads', data.maxDownloads.toString());
-            localStorage.setItem('user_used_downloads', (data.usedDownloads || 0).toString());
-          } else {
-            localStorage.removeItem('user_max_downloads');
-            localStorage.removeItem('user_used_downloads');
-          }
 
           updateStatusUI(cleanEmail);
           if (!isAutoLogin) closeModal();
@@ -559,8 +534,6 @@
           } else {
             localStorage.removeItem('user_buyer_email');
             localStorage.removeItem('user_member_status');
-            localStorage.removeItem('user_max_downloads');
-            localStorage.removeItem('user_used_downloads');
           }
         }
       } catch (err) {
@@ -596,17 +569,7 @@
 
       if (isFullAccess) {
         statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50";
-        
-        const rawMax = localStorage.getItem('user_max_downloads');
-        if (rawMax !== null && rawMax !== "") {
-          const maxAllowed = parseInt(rawMax, 10);
-          const used = parseInt(localStorage.getItem('user_used_downloads') || "0", 10);
-          const remaining = Math.max(0, maxAllowed - used);
-          statusText.innerText = `Full Access: ${email} (${remaining}/${maxAllowed} downloads left)`;
-        } else {
-          statusText.innerText = `Full Access: ${email} (Unlimited)`;
-        }
-
+        statusText.innerText = `Full Access: ${email} (Unlimited Downloads)`;
         statusText.className = "text-emerald-400 font-semibold";
         loginBtn.innerText = "Log Out";
         loginBtn.onclick = handleLogout;
@@ -725,12 +688,11 @@
           const title = file.name.replace(/\.[^/.]+$/, "");
           const isFree = file.name.toUpperCase().includes("FREE");
           const isAllowed = isFullAccess || isFree;
-          const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
-          const targetUrl = isAllowed ? directDownloadUrl : file.webViewLink;
+          const safeUrl = getSafeDownloadUrl(file.id);
 
           return `
             <a 
-              href="${targetUrl}" 
+              href="${isAllowed ? safeUrl : file.webViewLink}" 
               target="_blank" 
               rel="noopener noreferrer" 
               ${isAllowed ? `onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}'); return true;"` : ''}
@@ -836,7 +798,7 @@
         const title = file.name.replace(/\.[^/.]+$/, "");
         const isFree = file.name.toUpperCase().includes("FREE");
         const isAllowed = isFullAccess || isFree;
-        const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+        const safeUrl = getSafeDownloadUrl(file.id);
         const previewUrl = file.thumbnailLink ? file.thumbnailLink.replace(/=s\d+$/, '=w600-h800') : null;
 
         const card = document.createElement('div');
@@ -891,7 +853,7 @@
                   <span>View</span>
                 </a>
                 <a 
-                  href="${directDownloadUrl}" 
+                  href="${safeUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')"
@@ -943,7 +905,7 @@
         const title = file.name.replace(/\.[^/.]+$/, "");
         const isFree = file.name.toUpperCase().includes("FREE");
         const isAllowed = isFullAccess || isFree;
-        const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+        const safeUrl = getSafeDownloadUrl(file.id);
 
         return `
           <div class="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-slate-700/40 rounded-lg transition-colors">
@@ -960,7 +922,7 @@
                   <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                 </a>
                 <a 
-                  href="${directDownloadUrl}" 
+                  href="${safeUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')"
@@ -1011,8 +973,6 @@
       userMembershipStatus = "guest";
       localStorage.removeItem('user_buyer_email');
       localStorage.removeItem('user_member_status');
-      localStorage.removeItem('user_max_downloads');
-      localStorage.removeItem('user_used_downloads');
       updateStatusUI('');
       renderSheets(getFilteredFiles());
       displayRecentBatch();
