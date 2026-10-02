@@ -10,25 +10,6 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    @keyframes marquee-scroll-right {
-      0% {
-        transform: translateX(-50%);
-      }
-      100% {
-        transform: translateX(0%);
-      }
-    }
-
-    .marquee-track-right {
-      display: flex;
-      width: max-content;
-      animation: marquee-scroll-right 30s linear infinite;
-    }
-
-    .marquee-container:hover .marquee-track-right {
-      animation-play-state: paused;
-    }
-
     /* Custom Slim Scrollbars for Compact Lists */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
@@ -82,12 +63,12 @@
       <!-- Action Center -->
       <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-start md:justify-end">
         
-        <!-- NEW BUTTON: New Uploads (Immediate Download Hub) -->
+        <!-- New Uploads Hub -->
         <button 
           id="newUploadsBtn" 
           onclick="openNewUploadsModal()" 
           class="flex items-center gap-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 hover:text-white px-3 py-2 rounded-lg text-xs font-semibold transition-all shadow-sm cursor-pointer active:scale-95"
-          title="Browse and immediately download recent sheet music uploads"
+          title="Browse recent sheet music uploads"
         >
           <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
           <span>New Uploads</span>
@@ -164,72 +145,22 @@
     </div>
   </header>
 
-  <!-- Section 1: 48-Hour Recent Releases Banner -->
-  <div id="recentBannerSection" class="relative z-20 bg-slate-950/95 border-b border-indigo-900/40 py-2.5 hidden" onmouseenter="pauseRecentRotation()" onmouseleave="startRecentRotation()">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-2 shrink-0">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold text-[11px] uppercase tracking-wide">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
-          Added in Last 48 Hours
+  <!-- Non-Clickable Category / Genre Text Rotator Banner -->
+  <div class="relative z-10 bg-slate-950/80 border-b border-slate-800/80 py-2 px-4 backdrop-blur-sm select-none">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-3 text-xs sm:text-sm">
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 font-bold uppercase tracking-wider text-[11px] shrink-0">
+        <i data-lucide="music" class="w-3.5 h-3.5 text-indigo-400"></i>
+        Collection
+      </span>
+      <div class="relative h-6 flex items-center overflow-hidden">
+        <span 
+          id="genreRotatorText" 
+          class="font-medium text-slate-200 transition-all duration-500 opacity-100 transform translate-y-0 text-center"
+        >
+          Easy to Advanced Piano Arrangements
         </span>
       </div>
-      <div id="recentItemsContainer" class="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 text-xs w-full transition-opacity duration-300"></div>
-      <div id="recentPaginationDots" class="flex items-center gap-1 shrink-0"></div>
-    </div>
-  </div>
-
-  <!-- Section 2: Marquee Banner -->
-  <div class="marquee-container relative z-10 overflow-hidden bg-slate-900/90 border-b border-slate-800/80 py-2.5 text-xs select-none">
-    <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
-    <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
-
-    <div class="marquee-track-right flex items-center gap-8 text-slate-200">
-      <div class="flex items-center gap-3 shrink-0">
-        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold uppercase tracking-wider text-[10px]">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Features
-        </span>
-        <span class="font-medium text-slate-300">Easy to Advanced Classical Pieces</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Traditional Songs</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Old Pop Hits</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">New Hits</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Christmas</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Worship</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Movie Themes</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Disney</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Piano Songbooks and more</span>
-      </div>
-      <span class="text-amber-400 font-bold shrink-0">✦</span>
-      <div class="flex items-center gap-3 shrink-0" aria-hidden="true">
-        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold uppercase tracking-wider text-[10px]">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Features
-        </span>
-        <span class="font-medium text-slate-300">Easy to Advanced Classical Pieces</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Traditional Songs</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Old Pop Hits</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">New Hits</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Christmas</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Worship</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Movie Themes</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Disney</span>
-        <span class="text-indigo-400">•</span>
-        <span class="font-medium text-slate-300">Piano Songbooks and more</span>
-      </div>
-      <span class="text-amber-400 font-bold shrink-0">✦</span>
+      <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
     </div>
   </div>
 
@@ -290,7 +221,7 @@
     </div>
   </footer>
 
-  <!-- NEW MODAL: New Uploaded Sheets (Instant Download Hub with Limited Display Area) -->
+  <!-- New Uploaded Sheets Modal (Limited Height, Protected Links) -->
   <div id="newUploadsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'newUploadsModal')">
     <div class="bg-slate-800 border border-indigo-500/40 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl relative">
       
@@ -302,7 +233,7 @@
           </div>
           <div>
             <h3 class="text-base sm:text-lg font-bold text-white leading-tight">New Uploaded Sheet Music</h3>
-            <p class="text-xs text-slate-400">Download recent arrangements instantly</p>
+            <p class="text-xs text-slate-400">Latest arrangements added to the library</p>
           </div>
         </div>
         <button onclick="closeNewUploadsModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors">
@@ -310,7 +241,7 @@
         </button>
       </div>
 
-      <!-- Quick Filter Inside New Uploads -->
+      <!-- Search in New Uploads -->
       <div class="relative mb-3 shrink-0">
         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
         <input 
@@ -322,7 +253,7 @@
         />
       </div>
 
-      <!-- Compact, Scroll-Limited List Container (max-h-[55vh]) -->
+      <!-- Limited Height List Area -->
       <div id="newUploadsList" class="overflow-y-auto max-h-[55vh] custom-scrollbar space-y-2 pr-1 text-sm divide-y divide-slate-700/30">
         <!-- Injected dynamically -->
       </div>
@@ -420,7 +351,7 @@
             href="https://www.facebook.com/popularpianopieces/subscribe/" 
             target="_blank" 
             rel="noopener noreferrer"
-            class="mt-3.5 w-full py-2 px-2 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-[11px] uppercase tracking-wider rounded-lg shadow-md flex items-center justify-center gap-1 active:scale-95 transition-all text-center"
+            class="mt-3.5 w-full py-2 px-2 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-md flex items-center justify-center gap-1 active:scale-95 transition-all text-center"
           >
             <span>Subscribe (Meta)</span>
           </a>
@@ -494,17 +425,50 @@
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC63XU970BnSxqiVcSORO9O5cSJ1dyqsv4Jps2uffC9THoApU-PdKNeVj4mwi-fLzR/exec";
     
     // External Product URLs:
-    const KOFI_7DAY_TRIAL_URL = "https://ko-fi.com/s/4da63edf55"; // $4 7-Day Access Pass
-    const KOFI_ALL_ARCHIVE_URL = "https://ko-fi.com/s/a39b033712"; // 1-Time All Download
+    const KOFI_7DAY_TRIAL_URL = "https://ko-fi.com/s/4da63edf55";
+    const KOFI_ALL_ARCHIVE_URL = "https://ko-fi.com/s/a39b033712";
     const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
     // ============================================================
 
+    // Genre list for the rotator
+    const genreList = [
+      "Easy to Advanced Piano Arrangements",
+      "Old Pop Hits",
+      "Latest Pop Hits",
+      "Traditional Songs",
+      "Wedding Songs",
+      "Love Songs",
+      "Children Songs",
+      "Worship Songs",
+      "Classical Favorites",
+      "Disney & Movie Themes"
+    ];
+    let currentGenreIndex = 0;
+
     let allFiles = [];
     let recentFilesList = [];
-    let recentBatchIndex = 0;
-    let recentTimer = null;
     let isFullAccess = false;
     let userMembershipStatus = "guest"; // "guest", "active", "expired"
+
+    function initGenreRotator() {
+      const textEl = document.getElementById('genreRotatorText');
+      if (!textEl) return;
+
+      setInterval(() => {
+        textEl.style.opacity = '0';
+        textEl.style.transform = 'translateY(-8px)';
+
+        setTimeout(() => {
+          currentGenreIndex = (currentGenreIndex + 1) % genreList.length;
+          textEl.innerText = genreList[currentGenreIndex];
+          textEl.style.transform = 'translateY(8px)';
+          requestAnimationFrame(() => {
+            textEl.style.opacity = '1';
+            textEl.style.transform = 'translateY(0)';
+          });
+        }, 400);
+      }, 3200);
+    }
 
     function applyExternalLinks() {
       ['headerTrialBtn', 'stickyTrialBtn', 'modalTrialKofiBtn'].forEach(id => {
@@ -521,13 +485,21 @@
       });
     }
 
-    // Helper: Direct safe Google Drive viewer/download URL
     function getSafeDownloadUrl(fileId) {
       return `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
     }
 
     function attemptDownload(event, fileId, fileName) {
-      // Subscribers have unlimited downloads.
+      const decodedTitle = decodeURIComponent(fileName || "");
+      const isFreeSheet = decodedTitle.toUpperCase().includes("FREE");
+
+      // Strictly block download if not verified and not a free sheet
+      if (!isFullAccess && !isFreeSheet) {
+        if (event) event.preventDefault();
+        openModal();
+        return false;
+      }
+
       trackDownload(fileId, fileName);
       return true;
     }
@@ -586,7 +558,6 @@
             errorDiv.classList.remove('hidden');
           }
           renderSheets(getFilteredFiles());
-          displayRecentBatch();
           return;
         }
 
@@ -600,7 +571,6 @@
           updateStatusUI(cleanEmail);
           if (!isAutoLogin) closeModal();
           renderSheets(getFilteredFiles());
-          displayRecentBatch();
         } else {
           if (!isAutoLogin) {
             errorDiv.innerText = "Email not found in verified subscriber records. Please check spelling or select an option above.";
@@ -711,11 +681,8 @@
       }
     }
 
-    function initRecentRotator() {
-      const bannerSection = document.getElementById('recentBannerSection');
+    function setupRecentUploads() {
       const badge = document.getElementById('newUploadsCountBadge');
-      if (!bannerSection) return;
-
       const fortyEightHoursAgo = Date.now() - (48 * 60 * 60 * 1000);
 
       recentFilesList = allFiles.filter(file => {
@@ -723,95 +690,17 @@
         return new Date(file.createdTime).getTime() >= fortyEightHoursAgo;
       }).sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
 
-      // Fallback: If no files in 48h, grab the most recent 12 files
       if (recentFilesList.length === 0 && allFiles.length > 0) {
         recentFilesList = [...allFiles]
           .filter(f => f.createdTime)
           .sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime))
-          .slice(0, 15);
+          .slice(0, 20);
       }
 
       if (badge && recentFilesList.length > 0) {
         badge.innerText = recentFilesList.length;
         badge.classList.remove('hidden');
       }
-
-      if (recentFilesList.length === 0) {
-        bannerSection.classList.add('hidden');
-        return;
-      }
-
-      bannerSection.classList.remove('hidden');
-      recentBatchIndex = 0;
-      renderRecentDots();
-      displayRecentBatch();
-      startRecentRotation();
-    }
-
-    function renderRecentDots() {
-      const dotsContainer = document.getElementById('recentPaginationDots');
-      const totalPages = Math.ceil(recentFilesList.length / 5);
-      
-      if (totalPages <= 1) {
-        dotsContainer.innerHTML = '';
-        return;
-      }
-
-      dotsContainer.innerHTML = Array.from({ length: totalPages }, (_, i) => `
-        <span class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === recentBatchIndex ? 'bg-indigo-400 w-3.5' : 'bg-slate-600'}"></span>
-      `).join('');
-    }
-
-    function displayRecentBatch() {
-      const container = document.getElementById('recentItemsContainer');
-      if (!container || recentFilesList.length === 0) return;
-
-      container.style.opacity = '0';
-
-      setTimeout(() => {
-        const start = recentBatchIndex * 5;
-        const currentBatch = recentFilesList.slice(start, start + 5);
-
-        container.innerHTML = currentBatch.map(file => {
-          const title = file.name.replace(/\.[^/.]+$/, "");
-          const isFree = file.name.toUpperCase().includes("FREE");
-          const isAllowed = isFullAccess || isFree;
-          const safeUrl = getSafeDownloadUrl(file.id);
-
-          return `
-            <a 
-              href="${isAllowed ? safeUrl : file.webViewLink}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              ${isAllowed ? `onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}'); return true;"` : ''}
-              class="inline-flex items-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/70 hover:border-indigo-500/50 text-slate-200 hover:text-white px-2.5 py-1 rounded-md transition-all truncate max-w-[200px] sm:max-w-[220px]"
-              title="${sanitizeText(title)}"
-            >
-              <i data-lucide="music-2" class="w-3 h-3 text-indigo-400 shrink-0"></i>
-              <span class="truncate font-medium">${sanitizeText(title)}</span>
-            </a>
-          `;
-        }).join('');
-
-        renderRecentDots();
-        lucide.createIcons();
-        container.style.opacity = '1';
-      }, 150);
-    }
-
-    function startRecentRotation() {
-      if (recentTimer) clearInterval(recentTimer);
-      const totalPages = Math.ceil(recentFilesList.length / 5);
-      if (totalPages <= 1) return;
-
-      recentTimer = setInterval(() => {
-        recentBatchIndex = (recentBatchIndex + 1) % totalPages;
-        displayRecentBatch();
-      }, 5000);
-    }
-
-    function pauseRecentRotation() {
-      if (recentTimer) clearInterval(recentTimer);
     }
 
     // ============================================================
@@ -833,8 +722,7 @@
       const container = document.getElementById('newUploadsList');
       const filter = document.getElementById('newUploadsFilterInput').value.trim().toLowerCase();
       
-      // Filter list of recent uploads
-      let list = recentFilesList.length > 0 ? recentFilesList : allFiles.slice(0, 20);
+      let list = recentFilesList.length > 0 ? recentFilesList : allFiles.slice(0, 25);
       if (filter) {
         list = list.filter(f => f.name.toLowerCase().includes(filter));
       }
@@ -1020,7 +908,7 @@
                   <i data-lucide="share-2" class="w-3 h-3"></i>
                 </button>
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow flex items-center gap-1 ${isAllowed ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'}">
-                  <i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3 h-3"></i>
+                  <i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3.5 h-3.5"></i>
                   ${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Members / 1-Time'}
                 </span>
               </div>
@@ -1161,7 +1049,6 @@
       localStorage.removeItem('user_member_status');
       updateStatusUI('');
       renderSheets(getFilteredFiles());
-      displayRecentBatch();
       if (!document.getElementById('tocModal').classList.contains('hidden')) {
         renderTocList();
       }
@@ -1185,6 +1072,7 @@
       applyExternalLinks();
       checkSavedLogin();
       updateVisitCount();
+      initGenreRotator();
 
       const urlParams = new URLSearchParams(window.location.search);
       const queryParam = urlParams.get('q');
@@ -1207,7 +1095,7 @@
         statusMessage.classList.add('hidden');
         sheetsGrid.classList.remove('hidden');
         renderSheets(getFilteredFiles());
-        initRecentRotator();
+        setupRecentUploads();
       } catch (error) {
         statusMessage.innerHTML = `
           <div class="bg-red-500/10 text-red-400 border border-red-500/30 p-4 rounded-xl max-w-md text-left">
