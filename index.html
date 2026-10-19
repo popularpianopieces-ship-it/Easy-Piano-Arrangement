@@ -75,19 +75,6 @@
           <span id="newUploadsCountBadge" class="bg-indigo-500 text-slate-950 text-[10px] font-extrabold px-1.5 py-0.2 rounded-full hidden">0</span>
         </button>
 
-        <!-- $4 for 7-Day Access Pass -->
-        <a 
-          id="headerTrialBtn"
-          href="https://ko-fi.com/s/4da63edf55" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-2 px-3 rounded-lg shadow-sm border border-emerald-400/30 active:scale-95 transition-all cursor-pointer"
-          title="Get 7-Day Access Pass for $4 on Ko-fi"
-        >
-          <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-200"></i>
-          <span>$4 (7-Day Pass)</span>
-        </a>
-
         <!-- Table of Contents Button -->
         <button 
           id="tocBtn" 
@@ -105,17 +92,17 @@
           <button id="loginBtn" onclick="openModal()" class="ml-1 text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer">Log In</button>
         </div>
 
-        <!-- 1-Time Full Lifetime Archive -->
+        <!-- 1-Time All-Access Bundle (No Subscription) -->
         <a 
           id="headerKofiBtn" 
           href="https://ko-fi.com/s/a39b033712" 
           target="_blank" 
           rel="noopener noreferrer"
           class="hidden lg:inline-flex bg-slate-800 hover:bg-slate-750 text-amber-300 hover:text-amber-200 border border-amber-500/30 font-bold text-xs uppercase tracking-wider py-2 px-3 rounded-lg shadow-sm items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
-          title="Download all sheets at once - Pay via Ko-fi"
+          title="Download all sheets at once - No subscription needed"
         >
-          <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
-          <span>1-Time Archive</span>
+          <i data-lucide="package-open" class="w-3.5 h-3.5"></i>
+          <span>All-Access Bundle (No Subs)</span>
         </a>
 
         <!-- Facebook Subscription -->
@@ -164,12 +151,26 @@
     </div>
   </div>
 
-  <!-- Main Content Grid -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-grow w-full">
+  <!-- Main Content Grid & A-Z Alphabet Filter Strip -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
+    
+    <!-- A-Z Alphabet Filter Bar -->
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/60 p-2.5 sm:p-3 rounded-xl border border-slate-800 backdrop-blur-sm">
+      <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 shrink-0 px-1">
+        <i data-lucide="filter" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span>Filter by Title:</span>
+      </div>
+
+      <div id="alphabetFilterBar" class="flex flex-wrap items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
+        <!-- Rendered by initAlphabetFilter() -->
+      </div>
+    </div>
+
     <div id="statusMessage" class="flex flex-col items-center justify-center py-24 text-center">
       <div class="animate-spin rounded-full h-10 w-10 border-2 border-indigo-500 border-t-transparent mb-4"></div>
       <p class="text-slate-400 text-sm font-medium">Scanning piano sheets archive...</p>
     </div>
+    
     <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden"></div>
   </main>
 
@@ -180,7 +181,7 @@
         <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
         Unlock Sheet Music
       </span>
-      <span class="text-[10px] text-slate-400">$4 (7 Days) • Meta Sub • Archive</span>
+      <span class="text-[10px] text-slate-400">Meta Subscription • Complete Bundle</span>
     </div>
     <div class="flex items-center gap-1.5 shrink-0">
       <button 
@@ -192,14 +193,14 @@
         <span>New</span>
       </button>
       <a 
-        id="stickyTrialBtn"
-        href="https://ko-fi.com/s/4da63edf55" 
+        id="stickyKofiBtn" 
+        href="https://ko-fi.com/s/a39b033712" 
         target="_blank" 
         rel="noopener noreferrer"
-        class="bg-emerald-600 border border-emerald-400/40 text-white font-bold text-[11px] uppercase px-2.5 py-1.5 rounded-lg active:scale-95 transition-all"
-        title="Get $4 7-Day Access Pass on Ko-fi"
+        class="bg-slate-800 border border-amber-400/40 text-amber-300 font-bold text-[11px] uppercase px-2.5 py-1.5 rounded-lg active:scale-95 transition-all"
+        title="Get All-Access Bundle on Ko-fi"
       >
-        $4 Pass
+        Bundle
       </a>
       <a 
         id="stickyFbBtn" 
@@ -213,15 +214,29 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="py-6 border-t border-slate-800 bg-slate-950/40 text-center text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <span>Piano Sheet Music Library &copy; 2026</span>
-      <span>Instant Digital Sheet Music Access</span>
+  <!-- Footer with Support Email -->
+  <footer class="py-6 border-t border-slate-800 bg-slate-950/40 text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+      <div>
+        <p class="font-medium text-slate-300">Piano Sheet Music Library &copy; 2026</p>
+        <p class="text-[11px] text-slate-500 mt-0.5">Instant Digital Sheet Music Access</p>
+      </div>
+
+      <!-- Need Help Email Contact -->
+      <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+        <i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i>
+        <span>Need help?</span>
+        <a 
+          href="mailto:popularpianopieces@gmail.com" 
+          class="text-indigo-400 hover:text-indigo-300 font-semibold underline transition-colors"
+        >
+          popularpianopieces@gmail.com
+        </a>
+      </div>
     </div>
   </footer>
 
-  <!-- Clear First Page Image Modal (Pop-up View for Page 1 Only) -->
+  <!-- Clear First Page Image Modal -->
   <div id="firstPageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'firstPageModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 w-full max-w-lg max-h-[92vh] flex flex-col shadow-2xl relative">
       <div class="flex items-center justify-between pb-3 border-b border-slate-700/80 mb-3 shrink-0">
@@ -244,7 +259,6 @@
   <div id="newUploadsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'newUploadsModal')">
     <div class="bg-slate-800 border border-indigo-500/40 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[88vh] flex flex-col shadow-2xl relative">
       
-      <!-- Modal Header -->
       <div class="flex items-center justify-between pb-3.5 border-b border-slate-700/80 mb-3.5 shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
@@ -260,7 +274,6 @@
         </button>
       </div>
 
-      <!-- Search in New Uploads -->
       <div class="relative mb-3 shrink-0">
         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
         <input 
@@ -272,7 +285,6 @@
         />
       </div>
 
-      <!-- Limited Height List Area -->
       <div id="newUploadsList" class="overflow-y-auto max-h-[58vh] custom-scrollbar space-y-2.5 pr-1 text-sm divide-y divide-slate-700/30"></div>
     </div>
   </div>
@@ -310,9 +322,9 @@
     </div>
   </div>
 
-  <!-- 3-Tier Access & Verification Modal -->
+  <!-- 2-Tier Access & Verification Modal -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'loginModal')">
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-7 w-full max-w-xl shadow-2xl relative">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-7 w-full max-w-lg shadow-2xl relative">
       <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
@@ -321,37 +333,14 @@
         <div class="w-11 h-11 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-2 border border-amber-500/30">
           <i data-lucide="sparkles" class="w-5 h-5"></i>
         </div>
-        <h3 class="text-lg sm:text-xl font-bold text-white">Choose Your Access Tier</h3>
+        <h3 class="text-lg sm:text-xl font-bold text-white">Choose Your Access Option</h3>
         <p class="text-xs text-slate-300 mt-1">Unlock <span id="modalDynamicSheetCount" class="font-semibold text-amber-400">all</span> easy piano arrangements:</p>
       </div>
 
-      <!-- 3 Tier Options Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pb-5 border-b border-slate-700/70">
+      <!-- 2 Option Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-5 border-b border-slate-700/70">
         
-        <!-- Tier 1: $4 for 7-Day Access Pass -->
-        <div class="bg-slate-900/80 border border-emerald-500/40 hover:border-emerald-400 rounded-xl p-3.5 flex flex-col justify-between transition-all">
-          <div>
-            <div class="flex items-center gap-1 text-emerald-400 text-[11px] font-bold uppercase tracking-wider mb-1">
-              <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-              <span>7-Day Pass</span>
-            </div>
-            <h4 class="text-xs sm:text-sm font-bold text-white">$4 / 7 Days</h4>
-            <p class="text-[11px] text-slate-400 mt-1 leading-snug">
-              Download any songs without limits for 7 days. Pay once on Ko-fi.
-            </p>
-          </div>
-          <a 
-            id="modalTrialKofiBtn" 
-            href="https://ko-fi.com/s/4da63edf55" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="mt-3.5 w-full py-2 px-2 bg-emerald-600 hover:bg-emerald-500 border border-emerald-400 text-white font-bold text-[11px] uppercase tracking-wider rounded-lg shadow-sm flex items-center justify-center gap-1 active:scale-95 transition-all text-center"
-          >
-            <span>Get Pass ($4)</span>
-          </a>
-        </div>
-
-        <!-- Tier 2: Facebook Subscription via Meta -->
+        <!-- Option 1: Facebook Subscription via Meta -->
         <div class="bg-slate-900/80 border border-indigo-500/40 hover:border-indigo-400 rounded-xl p-3.5 flex flex-col justify-between transition-all">
           <div>
             <div class="flex items-center gap-1 text-indigo-400 text-[11px] font-bold uppercase tracking-wider mb-1">
@@ -374,16 +363,16 @@
           </a>
         </div>
 
-        <!-- Tier 3: Ko-fi Lifetime 1-Time Download -->
+        <!-- Option 2: All-Access Bundle (No Subscription) -->
         <div class="bg-slate-900/80 border border-amber-500/40 hover:border-amber-400 rounded-xl p-3.5 flex flex-col justify-between transition-all">
           <div>
             <div class="flex items-center gap-1 text-amber-400 text-[11px] font-bold uppercase tracking-wider mb-1">
-              <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
-              <span>1-Time All</span>
+              <i data-lucide="package-open" class="w-3.5 h-3.5"></i>
+              <span>Keep Forever</span>
             </div>
-            <h4 class="text-xs sm:text-sm font-bold text-white">Lifetime Archive</h4>
+            <h4 class="text-xs sm:text-sm font-bold text-white">All-Access Bundle</h4>
             <p class="text-[11px] text-slate-400 mt-1 leading-snug">
-              Download the entire collection bundle in one sitting. Keep forever.
+              Download the entire collection bundle in one click. Pay once on Ko-fi—no recurring subscription.
             </p>
           </div>
           <a 
@@ -393,7 +382,7 @@
             rel="noopener noreferrer"
             class="mt-3.5 w-full py-2 px-2 bg-slate-800 hover:bg-slate-750 border border-amber-400/40 text-amber-300 hover:text-amber-200 font-bold text-[11px] uppercase tracking-wider rounded-lg shadow-sm flex items-center justify-center gap-1 active:scale-95 transition-all text-center"
           >
-            <span>Get Archive</span>
+            <span>Get Bundle (No Subs)</span>
           </a>
         </div>
 
@@ -418,7 +407,7 @@
           </div>
 
           <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 border border-red-500/20 p-2 rounded-lg">
-            Email not found in verified subscriber records. Please check spelling or select an access tier above.
+            Email not found in verified subscriber records. Please check spelling or select an access option above.
           </div>
 
           <button 
@@ -429,6 +418,12 @@
             <span>Verify & Unlock Library</span>
           </button>
         </form>
+
+        <!-- Help Notice in Login Modal -->
+        <p class="text-[11px] text-center text-slate-500 mt-3.5">
+          Having trouble accessing? Email us: 
+          <a href="mailto:popularpianopieces@gmail.com" class="text-indigo-400 hover:underline">popularpianopieces@gmail.com</a>
+        </p>
       </div>
     </div>
   </div>
@@ -442,7 +437,6 @@
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC63XU970BnSxqiVcSORO9O5cSJ1dyqsv4Jps2uffC9THoApU-PdKNeVj4mwi-fLzR/exec";
     
     // External Product URLs:
-    const KOFI_7DAY_TRIAL_URL = "https://ko-fi.com/s/4da63edf55";
     const KOFI_ALL_ARCHIVE_URL = "https://ko-fi.com/s/a39b033712";
     const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
     // ============================================================
@@ -465,6 +459,7 @@
     let recentFilesList = [];
     let isFullAccess = false;
     let userMembershipStatus = "guest";
+    let selectedLetterFilter = "ALL"; // Current active A-Z filter
 
     function initGenreRotator() {
       const textEl = document.getElementById('genreRotatorText');
@@ -486,12 +481,41 @@
       }, 3200);
     }
 
-    function applyExternalLinks() {
-      ['headerTrialBtn', 'stickyTrialBtn', 'modalTrialKofiBtn'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.href = KOFI_7DAY_TRIAL_URL;
+    // Initialize the A-Z Alphabet Filter buttons
+    function initAlphabetFilter() {
+      const bar = document.getElementById('alphabetFilterBar');
+      if (!bar) return;
+
+      const letters = ['ALL', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), '#'];
+      
+      bar.innerHTML = letters.map(letter => `
+        <button 
+          onclick="setAlphabetFilter('${letter}')"
+          class="letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${letter === selectedLetterFilter ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'}"
+          data-letter="${letter}"
+        >
+          ${letter}
+        </button>
+      `).join('');
+    }
+
+    function setAlphabetFilter(letter) {
+      selectedLetterFilter = letter;
+      
+      // Update UI button highlights
+      document.querySelectorAll('#alphabetFilterBar .letter-btn').forEach(btn => {
+        if (btn.getAttribute('data-letter') === letter) {
+          btn.className = "letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer bg-indigo-600 text-white shadow-sm";
+        } else {
+          btn.className = "letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white";
+        }
       });
-      ['headerKofiBtn', 'modalKofiBtn'].forEach(id => {
+
+      renderSheets(getFilteredFiles());
+    }
+
+    function applyExternalLinks() {
+      ['headerKofiBtn', 'stickyKofiBtn', 'modalKofiBtn'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.href = KOFI_ALL_ARCHIVE_URL;
       });
@@ -501,7 +525,6 @@
       });
     }
 
-    // Resolves clear first-page thumbnail image
     function getFirstPagePreviewUrl(file) {
       if (file.thumbnailLink) {
         return file.thumbnailLink.replace(/=s\d+.*$/, '=s800');
@@ -590,7 +613,7 @@
           updateStatusUI(cleanEmail);
 
           if (!isAutoLogin) {
-            errorDiv.innerText = `Your access ended on ${data.endDate || 'the scheduled date'}. Please renew your 7-day pass or subscription to access.`;
+            errorDiv.innerText = `Your access ended on ${data.endDate || 'the scheduled date'}. Please renew your subscription to access.`;
             errorDiv.classList.remove('hidden');
           }
           renderSheets(getFilteredFiles());
@@ -610,7 +633,7 @@
           renderNewUploadsList();
         } else {
           if (!isAutoLogin) {
-            errorDiv.innerText = "Email not found in verified subscriber records. Please check spelling or select an option above.";
+            errorDiv.innerText = "Email not found in verified subscriber records. Please check spelling or select an access option above.";
             errorDiv.classList.remove('hidden');
           } else {
             localStorage.removeItem('user_buyer_email');
@@ -642,7 +665,6 @@
       const statusDot = document.getElementById('statusDot');
       const statusText = document.getElementById('userStatusText');
       const loginBtn = document.getElementById('loginBtn');
-      const headerTrialBtn = document.getElementById('headerTrialBtn');
       const headerKofiBtn = document.getElementById('headerKofiBtn');
       const headerFbSubBtn = document.getElementById('headerFbSubBtn');
       const mobileUnlockTriggerBtn = document.getElementById('mobileUnlockTriggerBtn');
@@ -655,7 +677,6 @@
         loginBtn.innerText = "Log Out";
         loginBtn.onclick = handleLogout;
 
-        if (headerTrialBtn) headerTrialBtn.classList.add('hidden');
         if (headerKofiBtn) headerKofiBtn.classList.add('hidden');
         if (headerFbSubBtn) headerFbSubBtn.classList.add('hidden');
         if (mobileUnlockTriggerBtn) mobileUnlockTriggerBtn.classList.add('hidden');
@@ -667,7 +688,6 @@
         loginBtn.innerText = "Log In";
         loginBtn.onclick = openModal;
 
-        if (headerTrialBtn) headerTrialBtn.classList.remove('hidden');
         if (headerKofiBtn) headerKofiBtn.classList.remove('hidden');
         if (headerFbSubBtn) headerFbSubBtn.classList.remove('hidden');
         if (mobileUnlockTriggerBtn) mobileUnlockTriggerBtn.classList.remove('hidden');
@@ -781,11 +801,9 @@
 
         return `
           <div class="py-3 px-3.5 flex items-center justify-between gap-3.5 hover:bg-slate-700/30 rounded-xl transition-all border border-slate-700/50 bg-slate-900/50">
-            <!-- Left Side: Clear First-Page Thumbnail + Metadata -->
             <div class="flex items-center gap-3.5 min-w-0">
               <span class="text-[11px] font-mono text-slate-500 w-4 text-right shrink-0">${index + 1}.</span>
               
-              <!-- First Page Thumbnail (Click to enlarge page 1) -->
               <div 
                 onclick="openFirstPageModal('${clearPreviewUrl}', '${encodeURIComponent(title)}')"
                 class="relative w-14 sm:w-16 aspect-[3/4] rounded-lg overflow-hidden bg-slate-950 border border-slate-700/80 shadow cursor-pointer group shrink-0 flex items-center justify-center"
@@ -803,13 +821,11 @@
                   <span class="text-[9px] mt-0.5">Page 1</span>
                 </div>
 
-                <!-- Subtle Hover Magnifier -->
                 <div class="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <i data-lucide="zoom-in" class="w-4 h-4 text-white"></i>
                 </div>
               </div>
 
-              <!-- Title & Info -->
               <div class="min-w-0">
                 <p class="text-slate-100 font-semibold truncate text-xs sm:text-sm leading-snug" title="${sanitizeText(file.name)}">
                   ${sanitizeText(title)}
@@ -817,12 +833,12 @@
                 <div class="flex flex-wrap items-center gap-2 mt-1">
                   ${isAllowed ? `
                     <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-sm ${isFree ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'}">
-                      <i data-lucide="check" class="w-3 h-3"></i>
+                      <i data-lucide="check" class="w-3.5 h-3.5"></i>
                       ${isFree ? 'Free Sample' : 'Unlocked'}
                     </span>
                   ` : `
                     <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm">
-                      <i data-lucide="lock" class="w-3 h-3 fill-amber-300"></i>
+                      <i data-lucide="lock" class="w-3.5 h-3.5 fill-amber-300"></i>
                       Subscriber Only
                     </span>
                   `}
@@ -831,7 +847,6 @@
               </div>
             </div>
             
-            <!-- Right Side: Download or Locked Unlock Trigger -->
             <div class="flex items-center gap-2 shrink-0">
               ${isAllowed ? `
                 <a 
@@ -874,7 +889,28 @@
 
     function getFilteredFiles() {
       const term = document.getElementById('searchInput').value.trim().toLowerCase();
-      let list = term ? allFiles.filter(f => f.name.toLowerCase().includes(term)) : allFiles;
+      let list = allFiles;
+
+      // 1. Text Search Filter
+      if (term) {
+        list = list.filter(f => f.name.toLowerCase().includes(term));
+      }
+
+      // 2. A-Z Alphabet Filter
+      if (selectedLetterFilter && selectedLetterFilter !== 'ALL') {
+        if (selectedLetterFilter === '#') {
+          // Non-alphabetic starting characters (numbers, symbols)
+          list = list.filter(f => {
+            const firstChar = f.name.trim().charAt(0).toUpperCase();
+            return !firstChar.match(/[A-Z]/);
+          });
+        } else {
+          list = list.filter(f => {
+            const clean = f.name.trim().toUpperCase();
+            return clean.startsWith(selectedLetterFilter);
+          });
+        }
+      }
 
       const freeFiles = [];
       const lockedFiles = [];
@@ -978,8 +1014,8 @@
                   <i data-lucide="share-2" class="w-3 h-3"></i>
                 </button>
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow flex items-center gap-1 ${isAllowed ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'}">
-                  <i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3 h-3"></i>
-                  ${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Members / 1-Time'}
+                  <i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3.5 h-3.5"></i>
+                  ${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Members / Bundle'}
                 </span>
               </div>
             </div>
@@ -1009,7 +1045,7 @@
             ` : `
               <button onclick="openModal()" class="w-full py-2 px-3 bg-gradient-to-r from-amber-500/90 to-indigo-600/90 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95">
                 <i data-lucide="lock" class="w-3.5 h-3.5 fill-slate-950"></i>
-                <span>Unlock (Pass, Sub, or Bundle)</span>
+                <span>Unlock (Sub or Bundle)</span>
               </button>
             `}
           </div>
@@ -1145,6 +1181,7 @@
       checkSavedLogin();
       updateVisitCount();
       initGenreRotator();
+      initAlphabetFilter();
 
       const urlParams = new URLSearchParams(window.location.search);
       const queryParam = urlParams.get('q');
