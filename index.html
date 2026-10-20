@@ -53,15 +53,15 @@
         <button 
           id="mobileUnlockTriggerBtn"
           onclick="openModal()" 
-          class="md:hidden bg-gradient-to-r from-amber-500 to-indigo-600 text-slate-950 font-bold text-xs uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
+          class="hidden md:hidden bg-gradient-to-r from-amber-500 to-indigo-600 text-slate-950 font-bold text-xs uppercase px-3 py-1.5 rounded-full items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
         >
           <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
           <span>Get Access</span>
         </button>
       </div>
 
-      <!-- Action Center -->
-      <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-start md:justify-end">
+      <!-- Action Center (Hidden while songs are loading) -->
+      <div id="headerActionsContainer" class="hidden flex-wrap items-center gap-2 w-full md:w-auto justify-start md:justify-end transition-opacity duration-300">
         
         <!-- New Uploads Hub -->
         <button 
@@ -154,8 +154,8 @@
   <!-- Main Content Grid & A-Z Alphabet Filter Strip -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
     
-    <!-- A-Z Alphabet Filter Bar -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/60 p-2.5 sm:p-3 rounded-xl border border-slate-800 backdrop-blur-sm">
+    <!-- A-Z Alphabet Filter Bar (Hidden while songs are loading) -->
+    <div id="alphabetFilterContainer" class="hidden mb-6 flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/60 p-2.5 sm:p-3 rounded-xl border border-slate-800 backdrop-blur-sm transition-opacity duration-300">
       <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 shrink-0 px-1">
         <i data-lucide="filter" class="w-3.5 h-3.5 text-indigo-400"></i>
         <span>Filter by Title:</span>
@@ -166,6 +166,7 @@
       </div>
     </div>
 
+    <!-- Loading Spinner & Status Display -->
     <div id="statusMessage" class="flex flex-col items-center justify-center py-24 text-center">
       <div class="animate-spin rounded-full h-10 w-10 border-2 border-indigo-500 border-t-transparent mb-4"></div>
       <p class="text-slate-400 text-sm font-medium">Scanning piano sheets archive...</p>
@@ -174,8 +175,8 @@
     <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden"></div>
   </main>
 
-  <!-- Mobile Floating Sticky Bar -->
-  <div id="guestStickyBar" class="fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-indigo-500/30 backdrop-blur-md z-40 py-2.5 px-4 flex items-center justify-between sm:hidden shadow-2xl transition-transform duration-300">
+  <!-- Mobile Floating Sticky Bar (Hidden while songs are loading) -->
+  <div id="guestStickyBar" class="hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-indigo-500/30 backdrop-blur-md z-40 py-2.5 px-4 items-center justify-between sm:hidden shadow-2xl transition-transform duration-300">
     <div class="flex flex-col pr-2">
       <span class="text-xs font-bold text-white flex items-center gap-1">
         <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
@@ -459,7 +460,7 @@
     let recentFilesList = [];
     let isFullAccess = false;
     let userMembershipStatus = "guest";
-    let selectedLetterFilter = "ALL"; // Current active A-Z filter
+    let selectedLetterFilter = "ALL";
 
     function initGenreRotator() {
       const textEl = document.getElementById('genreRotatorText');
@@ -481,7 +482,6 @@
       }, 3200);
     }
 
-    // Initialize the A-Z Alphabet Filter buttons
     function initAlphabetFilter() {
       const bar = document.getElementById('alphabetFilterBar');
       if (!bar) return;
@@ -502,7 +502,6 @@
     function setAlphabetFilter(letter) {
       selectedLetterFilter = letter;
       
-      // Update UI button highlights
       document.querySelectorAll('#alphabetFilterBar .letter-btn').forEach(btn => {
         if (btn.getAttribute('data-letter') === letter) {
           btn.className = "letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer bg-indigo-600 text-white shadow-sm";
@@ -680,7 +679,10 @@
         if (headerKofiBtn) headerKofiBtn.classList.add('hidden');
         if (headerFbSubBtn) headerFbSubBtn.classList.add('hidden');
         if (mobileUnlockTriggerBtn) mobileUnlockTriggerBtn.classList.add('hidden');
-        if (guestStickyBar) guestStickyBar.classList.add('hidden');
+        if (guestStickyBar) {
+          guestStickyBar.classList.add('hidden');
+          guestStickyBar.classList.remove('flex');
+        }
       } else {
         statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
         statusText.innerText = userMembershipStatus === "expired" ? "Subscription Expired" : "Guest Access";
@@ -688,10 +690,15 @@
         loginBtn.innerText = "Log In";
         loginBtn.onclick = openModal;
 
-        if (headerKofiBtn) headerKofiBtn.classList.remove('hidden');
-        if (headerFbSubBtn) headerFbSubBtn.classList.remove('hidden');
-        if (mobileUnlockTriggerBtn) mobileUnlockTriggerBtn.classList.remove('hidden');
-        if (guestStickyBar) guestStickyBar.classList.remove('hidden');
+        if (allFiles.length > 0) {
+          if (headerKofiBtn) headerKofiBtn.classList.remove('hidden');
+          if (headerFbSubBtn) headerFbSubBtn.classList.remove('hidden');
+          if (mobileUnlockTriggerBtn) mobileUnlockTriggerBtn.classList.remove('hidden');
+          if (guestStickyBar) {
+            guestStickyBar.classList.remove('hidden');
+            guestStickyBar.classList.add('flex');
+          }
+        }
       }
     }
 
@@ -891,15 +898,12 @@
       const term = document.getElementById('searchInput').value.trim().toLowerCase();
       let list = allFiles;
 
-      // 1. Text Search Filter
       if (term) {
         list = list.filter(f => f.name.toLowerCase().includes(term));
       }
 
-      // 2. A-Z Alphabet Filter
       if (selectedLetterFilter && selectedLetterFilter !== 'ALL') {
         if (selectedLetterFilter === '#') {
-          // Non-alphabetic starting characters (numbers, symbols)
           list = list.filter(f => {
             const firstChar = f.name.trim().charAt(0).toUpperCase();
             return !firstChar.match(/[A-Z]/);
@@ -1191,6 +1195,10 @@
 
       const statusMessage = document.getElementById('statusMessage');
       const sheetsGrid = document.getElementById('sheetsGrid');
+      const headerActionsContainer = document.getElementById('headerActionsContainer');
+      const alphabetFilterContainer = document.getElementById('alphabetFilterContainer');
+      const mobileUnlockTriggerBtn = document.getElementById('mobileUnlockTriggerBtn');
+      const guestStickyBar = document.getElementById('guestStickyBar');
 
       try {
         allFiles = await scanFolderDeep(FOLDER_ID);
@@ -1201,10 +1209,31 @@
         }
 
         updateDynamicCounts();
+        
+        // Hide loading message
         statusMessage.classList.add('hidden');
+        
+        // Reveal search box, header buttons, alphabet strip, and sheets grid
+        headerActionsContainer.classList.remove('hidden');
+        headerActionsContainer.classList.add('flex');
+        
+        alphabetFilterContainer.classList.remove('hidden');
+        alphabetFilterContainer.classList.add('flex');
+        
         sheetsGrid.classList.remove('hidden');
+
+        // Reveal mobile buttons if guest
+        if (!isFullAccess) {
+          if (mobileUnlockTriggerBtn) mobileUnlockTriggerBtn.classList.remove('hidden');
+          if (guestStickyBar) {
+            guestStickyBar.classList.remove('hidden');
+            guestStickyBar.classList.add('flex');
+          }
+        }
+
         renderSheets(getFilteredFiles());
         setupRecentUploads();
+        lucide.createIcons();
       } catch (error) {
         statusMessage.innerHTML = `
           <div class="bg-red-500/10 text-red-400 border border-red-500/30 p-4 rounded-xl max-w-md text-left">
