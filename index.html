@@ -8,9 +8,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- PDF-Lib for Client-Side Multi-Page Compilation, Watermarking & Stamping -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
   <style>
-    /* Custom Slim Scrollbars for Compact Lists */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -26,13 +27,18 @@
       background: rgba(99, 102, 241, 0.7);
     }
 
-    /* Subtle pulsing badge animation */
     @keyframes stickerFloat {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-2px); }
     }
     .sticker-bounce {
       animation: stickerFloat 2s ease-in-out infinite;
+    }
+
+    @media print {
+      body.guest-no-print {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -41,8 +47,6 @@
   <!-- Navigation / Header -->
   <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur-md sticky top-0 z-30 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
-      
-      <!-- Brand Logo, Title & Dynamic Sheet Counter -->
       <div class="flex items-center justify-between w-full md:w-auto gap-3">
         <div class="flex items-center gap-3">
           <div class="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30 shrink-0 shadow-inner">
@@ -59,7 +63,6 @@
           </div>
         </div>
 
-        <!-- Mobile Header Bundle Trigger with Sticker -->
         <div class="relative md:hidden">
           <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-emerald-500 text-slate-950 font-black text-[9px] uppercase px-1.5 py-0.2 rounded-full shadow-md z-10">
             For Non-Subscribers ↓
@@ -75,44 +78,34 @@
         </div>
       </div>
 
-      <!-- Action Center (Hidden while songs are loading) -->
       <div id="headerActionsContainer" class="hidden flex-wrap items-center gap-2 w-full md:w-auto justify-start md:justify-end transition-opacity duration-300">
-        
-        <!-- Avail Bundle Here on top of the Window with the Sticker -->
         <div class="relative pt-2">
-          <!-- Sticker Badge Pointing Down -->
           <div class="sticker-bounce absolute -top-2.5 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center pointer-events-none">
             <span class="bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-black text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md border border-emerald-300 whitespace-nowrap">
               For Non-Subscribers
             </span>
             <div class="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-emerald-400 -mt-0.5"></div>
           </div>
-
-          <!-- Main Avail Bundle Button -->
           <button 
             id="availBundleHeaderBtn" 
             onclick="openBundleModal()" 
             class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs transition-all shadow-md active:scale-95 cursor-pointer ring-1 ring-amber-400/50"
-            title="Browse & avail all songbook bundles on Ko-fi"
           >
             <i data-lucide="package-open" class="w-4 h-4 fill-slate-950"></i>
             <span>Avail Bundle Here</span>
           </button>
         </div>
 
-        <!-- New Uploads Hub (Last 72 Hours) -->
         <button 
           id="newUploadsBtn" 
           onclick="openNewUploadsModal()" 
           class="flex items-center gap-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 hover:text-white px-3 py-2 rounded-lg text-xs font-semibold transition-all shadow-sm cursor-pointer active:scale-95"
-          title="Browse sheet music uploaded in the last 72 hours"
         >
           <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
           <span>New Uploads</span>
           <span id="newUploadsCountBadge" class="bg-indigo-500 text-slate-950 text-[10px] font-extrabold px-1.5 py-0.2 rounded-full hidden">0</span>
         </button>
 
-        <!-- Table of Contents Button -->
         <button 
           id="tocBtn" 
           onclick="openTocModal()" 
@@ -122,14 +115,12 @@
           <span>Table of Contents</span>
         </button>
 
-        <!-- User Access Status Badge -->
         <div id="userStatusBadge" class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-2 rounded-lg text-xs font-medium">
           <span class="w-2 h-2 rounded-full bg-slate-500" id="statusDot"></span>
           <span id="userStatusText" class="text-slate-300">Guest Access</span>
           <button id="loginBtn" onclick="openModal()" class="ml-1 text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer">Log In</button>
         </div>
 
-        <!-- Search Input -->
         <div class="relative w-full sm:w-48">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
           <input 
@@ -143,41 +134,44 @@
     </div>
   </header>
 
-  <!-- Category / Genre Text Rotator Banner -->
-  <div class="relative z-10 bg-slate-950/80 border-b border-slate-800/80 py-2 px-4 backdrop-blur-sm select-none">
-    <div class="max-w-7xl mx-auto flex items-center justify-center gap-3 text-xs sm:text-sm">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 font-bold uppercase tracking-wider text-[11px] shrink-0">
-        <i data-lucide="music" class="w-3.5 h-3.5 text-indigo-400"></i>
-        Collection
-      </span>
-      <div class="relative h-6 flex items-center overflow-hidden">
-        <span 
-          id="genreRotatorText" 
-          class="font-medium text-slate-200 transition-all duration-500 opacity-100 transform translate-y-0 text-center"
-        >
-          Easy to Advanced Piano Arrangements
+  <!-- Category / Genre Text Rotator Banner with Create Songbook Button -->
+  <div class="relative z-10 bg-slate-950/80 border-b border-slate-800/80 py-2.5 px-4 backdrop-blur-sm select-none">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 font-bold uppercase tracking-wider text-[11px] shrink-0">
+          <i data-lucide="music" class="w-3.5 h-3.5 text-indigo-400"></i>
+          Collection
         </span>
+        <div class="relative h-6 flex items-center overflow-hidden">
+          <span id="genreRotatorText" class="font-medium text-slate-200 transition-all duration-500 opacity-100 transform translate-y-0 text-left truncate">
+            Easy to Advanced Piano Arrangements
+          </span>
+        </div>
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 shrink-0 hidden sm:inline-block"></i>
       </div>
-      <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+
+      <button 
+        id="createSongbookBtn"
+        onclick="openSongbookModal()" 
+        class="hidden items-center gap-1.5 bg-emerald-600/25 hover:bg-emerald-600/40 text-emerald-300 hover:text-emerald-100 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95 shrink-0"
+        title="Assemble custom songbooks"
+      >
+        <i data-lucide="book-marked" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span>Create Songbook For Printing</span>
+      </button>
     </div>
   </div>
 
   <!-- Main Content Grid & A-Z Alphabet Filter Strip -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
-    
-    <!-- A-Z Alphabet + OPM Filter Bar -->
     <div id="alphabetFilterContainer" class="hidden mb-6 flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/60 p-2.5 sm:p-3 rounded-xl border border-slate-800 backdrop-blur-sm transition-opacity duration-300">
       <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 shrink-0 px-1">
         <i data-lucide="filter" class="w-3.5 h-3.5 text-indigo-400"></i>
         <span>Filter by Title / Genre:</span>
       </div>
-
-      <div id="alphabetFilterBar" class="flex flex-wrap items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
-        <!-- Rendered by initAlphabetFilter() -->
-      </div>
+      <div id="alphabetFilterBar" class="flex flex-wrap items-center gap-1 overflow-x-auto pb-1 sm:pb-0"></div>
     </div>
 
-    <!-- Loading Spinner & Status Display -->
     <div id="statusMessage" class="flex flex-col items-center justify-center py-24 text-center">
       <div class="animate-spin rounded-full h-10 w-10 border-2 border-indigo-500 border-t-transparent mb-4"></div>
       <p class="text-slate-400 text-sm font-medium">Scanning piano sheets archive...</p>
@@ -186,7 +180,7 @@
     <div id="sheetsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden"></div>
   </main>
 
-  <!-- Mobile Floating Sticky Bar with Pointing Sticker -->
+  <!-- Mobile Floating Sticky Bar -->
   <div id="guestStickyBar" class="hidden fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-indigo-500/30 backdrop-blur-md z-40 py-2.5 px-4 items-center justify-between sm:hidden shadow-2xl transition-transform duration-300">
     <div class="flex flex-col pr-2">
       <span class="text-xs font-bold text-white flex items-center gap-1">
@@ -196,362 +190,211 @@
       <span class="text-[10px] text-slate-400">Monthly Meta Subscription</span>
     </div>
     <div class="flex items-center gap-1.5 shrink-0">
-      <button 
-        onclick="openNewUploadsModal()" 
-        class="bg-indigo-600/30 border border-indigo-400/50 text-indigo-300 font-bold text-[11px] uppercase px-2.5 py-1.5 rounded-lg active:scale-95 transition-all flex items-center gap-1"
-        title="View newly uploaded sheets"
-      >
+      <button onclick="openNewUploadsModal()" class="bg-indigo-600/30 border border-indigo-400/50 text-indigo-300 font-bold text-[11px] uppercase px-2.5 py-1.5 rounded-lg active:scale-95 transition-all flex items-center gap-1">
         <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
         <span>New</span>
       </button>
-
-      <a 
-        id="stickyFbBtn" 
-        href="https://www.facebook.com/popularpianopieces/subscribe/" 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        class="bg-gradient-to-r from-amber-500 to-indigo-600 text-slate-950 font-bold text-[11px] uppercase px-3 py-1.5 rounded-lg shadow-md active:scale-95 transition-all flex items-center gap-1"
-      >
-        <i data-lucide="sparkles" class="w-3 h-3 fill-slate-950"></i>
+      <a href="https://www.facebook.com/popularpianopieces/subscribe/" target="_blank" rel="noopener noreferrer" class="bg-gradient-to-r from-amber-500 to-indigo-600 text-slate-950 font-bold text-[11px] uppercase px-3 py-1.5 rounded-lg shadow-md active:scale-95 transition-all flex items-center gap-1">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
         <span>Subscribe to Meta</span>
       </a>
     </div>
   </div>
 
-  <!-- Footer with Support Email -->
+  <!-- Footer -->
   <footer class="py-6 border-t border-slate-800 bg-slate-950/40 text-xs text-slate-400">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
       <div>
         <p class="font-medium text-slate-300">Piano Sheet Music Library &copy; 2026</p>
         <p class="text-[11px] text-slate-500 mt-0.5">Instant Digital Sheet Music Access</p>
       </div>
-
       <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
         <i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i>
         <span>Need help?</span>
-        <a 
-          href="mailto:popularpianopieces@gmail.com" 
-          class="text-indigo-400 hover:text-indigo-300 font-semibold underline transition-colors"
-        >
-          popularpianopieces@gmail.com
-        </a>
+        <a href="mailto:popularpianopieces@gmail.com" class="text-indigo-400 hover:text-indigo-300 font-semibold underline transition-colors">popularpianopieces@gmail.com</a>
       </div>
     </div>
   </footer>
 
-  <!-- Clear First Page Image Modal -->
+  <!-- Modals -->
   <div id="firstPageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'firstPageModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 w-full max-w-lg max-h-[92vh] flex flex-col shadow-2xl relative">
       <div class="flex items-center justify-between pb-3 border-b border-slate-700/80 mb-3 shrink-0">
         <div class="min-w-0 pr-3">
           <div class="flex items-center gap-2">
             <h4 id="firstPageModalTitle" class="text-sm sm:text-base font-bold text-white truncate max-w-[240px] sm:max-w-xs">Sheet Title</h4>
-            <span id="firstPageModalOpmBadge" class="hidden shrink-0 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded shadow-sm">
-              OPM
-            </span>
+            <span id="firstPageModalOpmBadge" class="hidden shrink-0 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded shadow-sm">OPM</span>
           </div>
           <p id="firstPageModalSubtitle" class="text-[11px] text-slate-400 mt-0.5">First Page Preview Only</p>
         </div>
-        <button onclick="closeFirstPageModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition shrink-0">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button onclick="closeFirstPageModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition shrink-0"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-
       <div class="flex-grow overflow-auto custom-scrollbar flex items-center justify-center bg-slate-950 rounded-xl p-2 border border-slate-800">
         <img id="firstPageModalImg" src="" alt="First Page Preview" class="max-w-full max-h-[70vh] object-contain rounded shadow" />
       </div>
     </div>
   </div>
 
-  <!-- Dedicated Bundle Selector Dialogue Modal (Avail Bundle Modal) -->
+  <!-- Songbook Modal -->
+  <div id="songbookModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden" onclick="handleBackdropClick(event, 'songbookModal')">
+    <div class="bg-slate-800 border border-emerald-500/40 rounded-2xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-700/80 mb-3 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-emerald-600/20 text-emerald-400 rounded-lg border border-emerald-500/30">
+            <i data-lucide="book-marked" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white leading-tight">Create Songbook For Printing</h3>
+            <p class="text-[11px] sm:text-xs text-slate-400">Compile up to 30 custom songs into a Letter-sized PDF with Table of Contents</p>
+          </div>
+        </div>
+        <button onclick="closeSongbookModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0">
+        <div class="flex items-center gap-2">
+          <span id="songbookAccessStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+          <div>
+            <span id="songbookAccessStatusText" class="text-xs font-semibold text-slate-300">Guest Testing Enabled</span>
+            <p class="text-[11px] text-slate-400">Selected: <strong id="selectedSongsCount" class="text-emerald-400">0</strong> / 30 max</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="selectAllSongbookItems(true)" class="text-[11px] font-medium text-slate-300 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 cursor-pointer">Select 30</button>
+          <button type="button" onclick="selectAllSongbookItems(false)" class="text-[11px] font-medium text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 cursor-pointer">Clear</button>
+        </div>
+      </div>
+
+      <div class="relative mb-3 shrink-0">
+        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input type="text" id="songbookSearchInput" placeholder="Search pieces or type OPM..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500" oninput="renderSongbookPickerList()"/>
+      </div>
+
+      <div id="songbookPickerList" class="overflow-y-auto max-h-[46vh] custom-scrollbar space-y-1 pr-1 divide-y divide-slate-700/40 text-xs flex-grow"></div>
+
+      <div class="pt-3 border-t border-slate-700/80 mt-3 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+        <div id="songbookProgressText" class="text-xs text-slate-400 truncate text-center sm:text-left">Ready to assemble Letter-sized PDF with all pages and Table of Contents.</div>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button type="button" id="generateSongbookBtn" onclick="handleGenerateSongbookClick()" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
+            <i data-lucide="file-down" class="w-4 h-4 stroke-[2.5]"></i>
+            <span id="generateSongbookBtnText">Create & View Songbook</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bundle Modal -->
   <div id="bundleModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'bundleModal')">
     <div class="bg-slate-800 border border-amber-500/40 rounded-2xl p-5 sm:p-6 w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl relative">
-      
-      <!-- Modal Header -->
       <div class="flex items-center justify-between pb-3.5 border-b border-slate-700/80 mb-4 shrink-0">
         <div class="flex items-center gap-2.5">
-          <div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg border border-amber-500/30">
-            <i data-lucide="package-open" class="w-5 h-5"></i>
-          </div>
+          <div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg border border-amber-500/30"><i data-lucide="package-open" class="w-5 h-5"></i></div>
           <div>
             <h3 class="text-base sm:text-lg font-bold text-white leading-tight">Choose Your Sheet Music Bundle</h3>
             <p class="text-xs text-slate-400">Download complete artist & collection bundles directly on Ko-fi</p>
           </div>
         </div>
-        <button onclick="closeBundleModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button onclick="closeBundleModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-
-      <!-- Quick Filter for Bundles -->
       <div class="relative mb-3.5 shrink-0">
         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        <input 
-          type="text" 
-          id="bundleFilterInput" 
-          placeholder="Filter bundles (e.g. All-Star, Pop Collection, Queen, Disney)..." 
-          class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
-          oninput="renderBundleCards()"
-        />
+        <input type="text" id="bundleFilterInput" placeholder="Filter bundles..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500" oninput="renderBundleCards()"/>
       </div>
-
-      <!-- Bundles Grid List -->
-      <div id="bundleListGrid" class="overflow-y-auto max-h-[58vh] custom-scrollbar grid grid-cols-1 sm:grid-cols-2 gap-3 pr-1">
-        <!-- Rendered dynamically by renderBundleCards() -->
-      </div>
+      <div id="bundleListGrid" class="overflow-y-auto max-h-[58vh] custom-scrollbar grid grid-cols-1 sm:grid-cols-2 gap-3 pr-1"></div>
     </div>
   </div>
 
-  <!-- New Uploaded Sheets Modal (Last 72 Hours) -->
+  <!-- New Uploads Modal -->
   <div id="newUploadsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'newUploadsModal')">
     <div class="bg-slate-800 border border-indigo-500/40 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[88vh] flex flex-col shadow-2xl relative">
-      
       <div class="flex items-center justify-between pb-3.5 border-b border-slate-700/80 mb-3.5 shrink-0">
         <div class="flex items-center gap-2.5">
-          <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
-            <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
-          </div>
+          <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30"><i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i></div>
           <div>
             <h3 class="text-base sm:text-lg font-bold text-white leading-tight">New Uploaded Sheet Music</h3>
             <p class="text-xs text-slate-400">Uploaded in the last 72 hours with first-page preview</p>
           </div>
         </div>
-        <button onclick="closeNewUploadsModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button onclick="closeNewUploadsModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-
       <div class="relative mb-3 shrink-0">
         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        <input 
-          type="text" 
-          id="newUploadsFilterInput" 
-          placeholder="Filter recent uploads by title..." 
-          class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-          oninput="renderNewUploadsList()"
-        />
+        <input type="text" id="newUploadsFilterInput" placeholder="Filter recent uploads by title..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500" oninput="renderNewUploadsList()"/>
       </div>
-
       <div id="newUploadsList" class="overflow-y-auto max-h-[58vh] custom-scrollbar space-y-2.5 pr-1 text-sm divide-y divide-slate-700/30"></div>
     </div>
   </div>
 
-  <!-- Table of Contents Modal -->
+  <!-- TOC Modal -->
   <div id="tocModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'tocModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-6 w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl relative">
       <div class="flex items-center justify-between pb-4 border-b border-slate-700/80 mb-4 shrink-0">
         <div class="flex items-center gap-2.5">
-          <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
-            <i data-lucide="list-music" class="w-5 h-5"></i>
-          </div>
+          <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30"><i data-lucide="list-music" class="w-5 h-5"></i></div>
           <div>
             <h3 class="text-lg font-bold text-white leading-tight">Table of Contents</h3>
             <p class="text-xs text-slate-400"><span id="tocTotalCount">0</span> sheets sorted alphabetically (A–Z)</p>
           </div>
         </div>
-        <button onclick="closeTocModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button onclick="closeTocModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-
       <div class="relative mb-3 shrink-0">
         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        <input 
-          type="text" 
-          id="tocFilterInput" 
-          placeholder="Filter titles in index..." 
-          class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-          oninput="renderTocList()"
-        />
+        <input type="text" id="tocFilterInput" placeholder="Filter titles in index..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500" oninput="renderTocList()"/>
       </div>
-
       <div id="tocList" class="overflow-y-auto max-h-[55vh] custom-scrollbar space-y-1.5 pr-1 divide-y divide-slate-700/40 text-sm"></div>
     </div>
   </div>
 
-  <!-- Verification / Log-in Modal -->
+  <!-- Login Modal -->
   <div id="loginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'loginModal')">
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-7 w-full max-w-lg shadow-2xl relative">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       <div class="text-center mb-5">
-        <div class="w-11 h-11 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-2 border border-amber-500/30">
-          <i data-lucide="user-check" class="w-5 h-5"></i>
-        </div>
+        <div class="w-11 h-11 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-2 border border-amber-500/30"><i data-lucide="user-check" class="w-5 h-5"></i></div>
         <h3 class="text-lg sm:text-xl font-bold text-white">Member & Buyer Verification</h3>
         <p class="text-xs text-slate-300 mt-1">Enter your registered email address to unlock unlimited downloads:</p>
       </div>
-
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
         <div>
-          <input 
-            type="email" 
-            id="emailInput" 
-            required 
-            placeholder="Enter your email address..." 
-            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-          />
+          <input type="email" id="emailInput" required placeholder="Enter your email address..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"/>
         </div>
-
-        <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 border border-red-500/20 p-2 rounded-lg">
-          Email not found in verified subscriber records. Please check spelling or subscribe on Meta.
-        </div>
-
-        <button 
-          type="submit" 
-          id="verifySubmitBtn" 
-          class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
-        >
-          <span>Verify & Unlock Library</span>
-        </button>
-
+        <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 border border-red-500/20 p-2 rounded-lg">Email not found in verified subscriber records. Please check spelling or subscribe on Meta.</div>
+        <button type="submit" id="verifySubmitBtn" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"><span>Verify & Unlock Library</span></button>
         <div class="text-center pt-2">
-          <button 
-            type="button" 
-            onclick="closeModal(); openBundleModal();" 
-            class="text-xs text-amber-400 hover:underline inline-flex items-center gap-1 font-semibold"
-          >
-            <i data-lucide="package-open" class="w-3.5 h-3.5"></i>
-            <span>Looking for a bundle? Click here to avail.</span>
-          </button>
+          <button type="button" onclick="closeModal(); openBundleModal();" class="text-xs text-amber-400 hover:underline inline-flex items-center gap-1 font-semibold"><i data-lucide="package-open" class="w-3.5 h-3.5"></i><span>Looking for a bundle? Click here to avail.</span></button>
         </div>
       </form>
-
-      <p class="text-[11px] text-center text-slate-500 mt-4 border-t border-slate-700/60 pt-3">
-        Need assistance? Email us: 
-        <a href="mailto:popularpianopieces@gmail.com" class="text-indigo-400 hover:underline">popularpianopieces@gmail.com</a>
-      </p>
+      <p class="text-[11px] text-center text-slate-500 mt-4 border-t border-slate-700/60 pt-3">Need assistance? Email us: <a href="mailto:popularpianopieces@gmail.com" class="text-indigo-400 hover:underline">popularpianopieces@gmail.com</a></p>
     </div>
   </div>
 
   <script>
-    // ============================================================
-    // CONFIGURATION
-    // ============================================================
     const API_KEY = "AIzaSyBybDa4zqq5ReVVvU3jp9saRO8rC_hSDDc";
     const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC63XU970BnSxqiVcSORO9O5cSJ1dyqsv4Jps2uffC9THoApU-PdKNeVj4mwi-fLzR/exec";
     const FB_SUBSCRIPTION_URL = "https://www.facebook.com/popularpianopieces/subscribe/";
+    const MAX_SONGBOOK_SONGS = 30;
 
-    // ============================================================
-    // BUNDLES DATA (Exact Ko-fi URLs with Pop & Complete First)
-    // ============================================================
     const BUNDLE_DATA = [
-      {
-        id: "all-star-easy-selection",
-        title: "All-Star Easy Selection Bundle",
-        subtitle: "Hand-picked easy piano arrangements of greatest hits",
-        icon: "star",
-        category: "Pop Collection",
-        highlight: true,
-        kofiUrl: "https://ko-fi.com/s/adb465cdf3"
-      },
-      {
-        id: "piano-sheet-library-collection",
-        title: "Piano Sheet Library Collection",
-        subtitle: "Complete library bundle with instant access to all arrangements",
-        icon: "library",
-        category: "Complete Collection",
-        highlight: true,
-        kofiUrl: "https://ko-fi.com/s/a39b033712"
-      },
-      {
-        id: "all-lovesongs",
-        title: "All Lovesongs",
-        subtitle: "Romance, ballads & timeless love themes",
-        icon: "heart",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/69aeb59390"
-      },
-      {
-        id: "abba",
-        title: "ABBA",
-        subtitle: "Dancing Queen, Mamma Mia, and timeless classics",
-        icon: "disc",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/cba7efd769"
-      },
-      {
-        id: "carpenters",
-        title: "Carpenters",
-        subtitle: "Complete beloved soft-rock favorites and hits",
-        icon: "music-2",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/b5e789b527"
-      },
-      {
-        id: "carpenters-easy",
-        title: "Carpenters (Easy)",
-        subtitle: "Easy-to-play arrangements of iconic Carpenters songs",
-        icon: "music-2",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/ae1a63ddd8"
-      },
-      {
-        id: "the-beatles",
-        title: "The Beatles",
-        subtitle: "Legendary songs and anthems from the Fab Four",
-        icon: "radio",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/5c03638bee"
-      },
-      {
-        id: "barry-manilow",
-        title: "Barry Manilow",
-        subtitle: "Classic romantic favorites & timeless melodies",
-        icon: "mic",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/b9ed1af11b"
-      },
-      {
-        id: "queen-easy",
-        title: "Queen (Easy)",
-        subtitle: "Easy piano scores of legendary Queen rock hits",
-        icon: "crown",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/deca7bfb71"
-      },
-      {
-        id: "disney-easy",
-        title: "Disney (Easy)",
-        subtitle: "Beloved animated movie soundtracks arranged for easy piano",
-        icon: "sparkles",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/195ee06bcd"
-      },
-      {
-        id: "christmas",
-        title: "Christmas",
-        subtitle: "Holiday carols and festive Christmas music",
-        icon: "gift",
-        category: "Bundle",
-        highlight: false,
-        kofiUrl: "https://ko-fi.com/s/f878d0cd6d"
-      }
+      { id: "all-star-easy-selection", title: "All-Star Easy Selection Bundle", subtitle: "Hand-picked easy piano arrangements of greatest hits", icon: "star", category: "Pop Collection", highlight: true, kofiUrl: "https://ko-fi.com/s/adb465cdf3" },
+      { id: "piano-sheet-library-collection", title: "Piano Sheet Library Collection", subtitle: "Complete library bundle with instant access to all arrangements", icon: "library", category: "Complete Collection", highlight: true, kofiUrl: "https://ko-fi.com/s/a39b033712" },
+      { id: "all-lovesongs", title: "All Lovesongs", subtitle: "Romance, ballads & timeless love themes", icon: "heart", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/69aeb59390" },
+      { id: "abba", title: "ABBA", subtitle: "Dancing Queen, Mamma Mia, and timeless classics", icon: "disc", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/cba7efd769" },
+      { id: "carpenters", title: "Carpenters", subtitle: "Complete beloved soft-rock favorites and hits", icon: "music-2", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/b5e789b527" },
+      { id: "carpenters-easy", title: "Carpenters (Easy)", subtitle: "Easy-to-play arrangements of iconic Carpenters songs", icon: "music-2", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/ae1a63ddd8" },
+      { id: "the-beatles", title: "The Beatles", subtitle: "Legendary songs and anthems from the Fab Four", icon: "radio", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/5c03638bee" },
+      { id: "barry-manilow", title: "Barry Manilow", subtitle: "Classic romantic favorites & timeless melodies", icon: "mic", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/b9ed1af11b" },
+      { id: "queen-easy", title: "Queen (Easy)", subtitle: "Easy piano scores of legendary Queen rock hits", icon: "crown", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/deca7bfb71" },
+      { id: "disney-easy", title: "Disney (Easy)", subtitle: "Beloved animated movie soundtracks arranged for easy piano", icon: "sparkles", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/195ee06bcd" },
+      { id: "christmas", title: "Christmas", subtitle: "Holiday carols and festive Christmas music", icon: "gift", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/f878d0cd6d" }
     ];
-    // ============================================================
 
     const genreList = [
-      "Easy to Advanced Piano Arrangements",
-      "Old Pop Hits",
-      "Latest Pop Hits",
-      "Traditional Songs",
-      "Wedding Songs",
-      "Love Songs",
-      "Children Songs",
-      "Worship Songs",
-      "Classical Favorites",
-      "Disney & Movie Themes"
+      "Easy to Advanced Piano Arrangements", "Old Pop Hits", "Latest Pop Hits",
+      "Traditional Songs", "Wedding Songs", "Love Songs", "Children Songs",
+      "Worship Songs", "Classical Favorites", "Disney & Movie Themes"
     ];
     let currentGenreIndex = 0;
 
@@ -560,15 +403,14 @@
     let isFullAccess = false;
     let userMembershipStatus = "guest";
     let selectedLetterFilter = "ALL";
+    let selectedSongbookIds = new Set();
 
     function initGenreRotator() {
       const textEl = document.getElementById('genreRotatorText');
       if (!textEl) return;
-
       setInterval(() => {
         textEl.style.opacity = '0';
         textEl.style.transform = 'translateY(-8px)';
-
         setTimeout(() => {
           currentGenreIndex = (currentGenreIndex + 1) % genreList.length;
           textEl.innerText = genreList[currentGenreIndex];
@@ -584,47 +426,375 @@
     function initAlphabetFilter() {
       const bar = document.getElementById('alphabetFilterBar');
       if (!bar) return;
-
       const buttons = ['ALL', 'OPM', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), '#'];
-      
       bar.innerHTML = buttons.map(token => {
         const isOpmToken = token === 'OPM';
         let customActiveStyle = token === selectedLetterFilter 
           ? (isOpmToken ? 'bg-amber-500 text-slate-950 font-extrabold shadow' : 'bg-indigo-600 text-white shadow-sm') 
           : (isOpmToken ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white');
-
-        return `
-          <button 
-            onclick="setAlphabetFilter('${token}')"
-            class="letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${customActiveStyle}"
-            data-letter="${token}"
-          >
-            ${token}
-          </button>
-        `;
+        return `<button onclick="setAlphabetFilter('${token}')" class="letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${customActiveStyle}" data-letter="${token}">${token}</button>`;
       }).join('');
     }
 
     function setAlphabetFilter(token) {
       selectedLetterFilter = token;
-      
       document.querySelectorAll('#alphabetFilterBar .letter-btn').forEach(btn => {
         const btnToken = btn.getAttribute('data-letter');
         const isOpmToken = btnToken === 'OPM';
-
         if (btnToken === token) {
           btn.className = `letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${isOpmToken ? 'bg-amber-500 text-slate-950 font-extrabold shadow' : 'bg-indigo-600 text-white shadow-sm'}`;
         } else {
           btn.className = `letter-btn px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${isOpmToken ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'}`;
         }
       });
-
       renderSheets(getFilteredFiles());
     }
 
-    // ============================================================
-    // BUNDLE MODAL FUNCTIONS (Dialogue box on top button click)
-    // ============================================================
+    function openSongbookModal() {
+      const modal = document.getElementById('songbookModal');
+      document.getElementById('songbookSearchInput').value = '';
+      updateSongbookModalStatusUI();
+      renderSongbookPickerList();
+      modal.classList.remove('hidden');
+      document.getElementById('songbookSearchInput').focus();
+    }
+
+    function closeSongbookModal() {
+      document.getElementById('songbookModal').classList.add('hidden');
+    }
+
+    function updateSongbookModalStatusUI() {
+      const dot = document.getElementById('songbookAccessStatusDot');
+      const text = document.getElementById('songbookAccessStatusText');
+      const countEl = document.getElementById('selectedSongsCount');
+      const btnText = document.getElementById('generateSongbookBtnText');
+
+      if (countEl) {
+        countEl.innerText = selectedSongbookIds.size;
+        countEl.className = selectedSongbookIds.size >= MAX_SONGBOOK_SONGS ? "text-amber-400 font-extrabold" : "text-emerald-400 font-bold";
+      }
+
+      if (isFullAccess) {
+        if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50";
+        if (text) {
+          text.className = "text-xs font-semibold text-emerald-400";
+          text.innerText = "Verified Subscriber: Full Print & Download Unlocked (No Watermarks)";
+        }
+        if (btnText) btnText.innerText = "Generate & Download Print Ready PDF";
+      } else {
+        if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+        if (text) {
+          text.className = "text-xs font-semibold text-amber-300";
+          text.innerText = "Guest Testing Enabled (All Pages Watermarked & Lower Halves Covered)";
+        }
+        if (btnText) btnText.innerText = "Compile & View Songbook Preview";
+      }
+    }
+
+    function toggleSongbookSelection(fileId) {
+      if (selectedSongbookIds.has(fileId)) {
+        selectedSongbookIds.delete(fileId);
+      } else {
+        if (selectedSongbookIds.size >= MAX_SONGBOOK_SONGS) {
+          alert(`You can select a maximum of ${MAX_SONGBOOK_SONGS} songs per songbook.`);
+          return;
+        }
+        selectedSongbookIds.add(fileId);
+      }
+      updateSongbookModalStatusUI();
+    }
+
+    function selectAllSongbookItems(selectState) {
+      if (selectState) {
+        selectedSongbookIds.clear();
+        const available = allFiles.slice(0, MAX_SONGBOOK_SONGS);
+        available.forEach(f => selectedSongbookIds.add(f.id));
+      } else {
+        selectedSongbookIds.clear();
+      }
+      updateSongbookModalStatusUI();
+      renderSongbookPickerList();
+    }
+
+    function renderSongbookPickerList() {
+      const container = document.getElementById('songbookPickerList');
+      const query = document.getElementById('songbookSearchInput').value.trim().toLowerCase();
+      let list = allFiles;
+
+      if (query) {
+        const isOpmSearch = (query === 'opm') || query.includes('opm');
+        if (isOpmSearch) {
+          list = list.filter(f => f.isOPM || (f.name && f.name.toLowerCase().includes('opm')));
+        } else {
+          list = list.filter(f => f.name.toLowerCase().includes(query));
+        }
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="py-8 text-center text-xs text-slate-400">No sheet music found matching "${sanitizeText(query)}".</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map((file, idx) => {
+        const title = file.name.replace(/\.[^/.]+$/, "");
+        const isChecked = selectedSongbookIds.has(file.id);
+        return `
+          <label class="py-2 px-2.5 flex items-center justify-between gap-3 hover:bg-slate-700/30 rounded-lg cursor-pointer transition-colors ${isChecked ? 'bg-indigo-950/30' : ''}">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <input type="checkbox" class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700 focus:ring-0 focus:ring-offset-0 cursor-pointer" ${isChecked ? 'checked' : ''} onchange="toggleSongbookSelection('${file.id}')"/>
+              <span class="text-[11px] font-mono text-slate-500 w-5 text-right shrink-0">${idx + 1}.</span>
+              <div class="truncate flex items-center gap-1.5">
+                ${file.isOPM ? `<span class="bg-amber-500/20 text-amber-300 text-[9px] font-bold px-1.5 py-0.2 rounded border border-amber-500/30">OPM</span>` : ''}
+                <span class="text-slate-200 font-semibold truncate text-xs sm:text-sm" title="${sanitizeText(file.name)}">${sanitizeText(title)}</span>
+              </div>
+            </div>
+            <span class="text-[10px] text-slate-500 shrink-0 font-medium">Letter PDF</span>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function handleGenerateSongbookClick() {
+      if (selectedSongbookIds.size === 0) {
+        alert("Please select at least 1 song to compile into your songbook.");
+        return;
+      }
+      if (selectedSongbookIds.size > MAX_SONGBOOK_SONGS) {
+        alert(`Maximum of ${MAX_SONGBOOK_SONGS} songs allowed.`);
+        return;
+      }
+      compileAndDownloadSongbookPDF();
+    }
+
+    async function fetchCompleteScorePdfBytes(fileId) {
+      const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${API_KEY}`;
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`Failed to download PDF (HTTP ${res.status})`);
+      }
+      return await res.arrayBuffer();
+    }
+
+    async function compileAndDownloadSongbookPDF() {
+      const btn = document.getElementById('generateSongbookBtn');
+      const progressText = document.getElementById('songbookProgressText');
+      const originalBtnHTML = btn.innerHTML;
+
+      btn.disabled = true;
+      btn.innerHTML = `<div class="animate-spin rounded-full h-4 w-4 border-2 border-slate-950 border-t-transparent"></div><span>Assembling Songbook...</span>`;
+      progressText.innerText = "Initializing Letter-sized document layout...";
+
+      try {
+        const { PDFDocument, rgb, degrees, StandardFonts } = PDFLib;
+        const mergedPdf = await PDFDocument.create();
+
+        const fontBold = await mergedPdf.embedFont(StandardFonts.HelveticaBold);
+        const fontRegular = await mergedPdf.embedFont(StandardFonts.Helvetica);
+
+        const LETTER_WIDTH = 612;
+        const LETTER_HEIGHT = 792;
+
+        const chosenFiles = allFiles
+          .filter(f => selectedSongbookIds.has(f.id))
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
+          .slice(0, MAX_SONGBOOK_SONGS);
+
+        const songEntries = [];
+        const loadedPdfDocs = [];
+
+        for (let i = 0; i < chosenFiles.length; i++) {
+          const file = chosenFiles[i];
+          progressText.innerText = `Fetching score ${i + 1} of ${chosenFiles.length}: ${file.name.replace(/\.[^/.]+$/, "")}...`;
+
+          try {
+            const arrayBuffer = await fetchCompleteScorePdfBytes(file.id);
+            const srcDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+            const pageCount = srcDoc.getPageCount();
+
+            loadedPdfDocs.push({ file, srcDoc, pageCount });
+            songEntries.push({
+              title: file.name.replace(/\.[^/.]+$/, ""),
+              pageCount: pageCount,
+              isOPM: !!file.isOPM
+            });
+          } catch (err) {
+            console.warn(`Could not load PDF for ${file.name}:`, err);
+          }
+        }
+
+        if (loadedPdfDocs.length === 0) {
+          throw new Error("Could not retrieve PDF data for the selected items.");
+        }
+
+        const ITEMS_PER_TOC_PAGE = 16;
+        const tocPageCount = Math.ceil(songEntries.length / ITEMS_PER_TOC_PAGE) || 1;
+        let runningPageNumber = tocPageCount + 1;
+
+        songEntries.forEach(entry => {
+          entry.startPage = runningPageNumber;
+          runningPageNumber += entry.pageCount;
+        });
+
+        const totalDocumentPages = runningPageNumber - 1;
+        const savedEmail = localStorage.getItem('user_buyer_email');
+        const belongsToText = (isFullAccess && savedEmail) ? `This belongs to : ${savedEmail}` : `This belongs to : Guest`;
+
+        for (let tocIndex = 0; tocIndex < tocPageCount; tocIndex++) {
+          progressText.innerText = `Generating Table of Contents (Page ${tocIndex + 1} of ${tocPageCount})...`;
+          const tocPage = mergedPdf.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
+
+          if (tocIndex === 0) {
+            tocPage.drawText("Piano Sheet Collection", { x: 54, y: LETTER_HEIGHT - 54, size: 24, font: fontBold, color: rgb(0.09, 0.12, 0.18) });
+            tocPage.drawText("TABLE OF CONTENTS", { x: 54, y: LETTER_HEIGHT - 85, size: 13, font: fontBold, color: rgb(0.2, 0.45, 0.38) });
+          } else {
+            tocPage.drawText("TABLE OF CONTENTS (CONTINUED)", { x: 54, y: LETTER_HEIGHT - 54, size: 16, font: fontBold, color: rgb(0.09, 0.12, 0.18) });
+          }
+
+          const headerBottomY = (tocIndex === 0) ? (LETTER_HEIGHT - 110) : (LETTER_HEIGHT - 80);
+          tocPage.drawText("SONG TITLE", { x: 54, y: headerBottomY, size: 10, font: fontBold, color: rgb(0.4, 0.45, 0.5) });
+          tocPage.drawText("PAGE", { x: LETTER_WIDTH - 90, y: headerBottomY, size: 10, font: fontBold, color: rgb(0.4, 0.45, 0.5) });
+          tocPage.drawLine({ start: { x: 54, y: headerBottomY - 7 }, end: { x: LETTER_WIDTH - 54, y: headerBottomY - 7 }, thickness: 1, color: rgb(0.8, 0.83, 0.88) });
+
+          const startIndex = tocIndex * ITEMS_PER_TOC_PAGE;
+          const slice = songEntries.slice(startIndex, startIndex + ITEMS_PER_TOC_PAGE);
+          let currentY = headerBottomY - 30;
+
+          slice.forEach(song => {
+            const displayTitle = song.title.length > 50 ? song.title.substring(0, 48) + "..." : song.title;
+            tocPage.drawText(displayTitle, { x: 54, y: currentY, size: 12, font: fontBold, color: rgb(0.1, 0.14, 0.22) });
+
+            if (song.isOPM) {
+              tocPage.drawText("[OPM]", { x: 54 + fontBold.widthOfTextAtSize(displayTitle, 12) + 6, y: currentY, size: 9, font: fontBold, color: rgb(0.85, 0.5, 0.1) });
+            }
+
+            const dots = ". ".repeat(28);
+            tocPage.drawText(dots, { x: LETTER_WIDTH - 210, y: currentY, size: 9, font: fontRegular, color: rgb(0.7, 0.75, 0.8) });
+            tocPage.drawText(String(song.startPage), { x: LETTER_WIDTH - 85, y: currentY, size: 11, font: fontBold, color: rgb(0.12, 0.15, 0.22) });
+            currentY -= 32;
+          });
+
+          if (tocIndex === tocPageCount - 1) {
+            tocPage.drawText(belongsToText, { x: 54, y: 54, size: 10, font: fontBold, color: rgb(0.18, 0.55, 0.42) });
+          }
+          tocPage.drawText(`Table of Contents • Page ${tocIndex + 1} of ${totalDocumentPages}`, { x: 54, y: 32, size: 8, font: fontRegular, color: rgb(0.5, 0.55, 0.6) });
+        }
+
+        let docPageCounter = tocPageCount + 1;
+
+        for (let i = 0; i < loadedPdfDocs.length; i++) {
+          const item = loadedPdfDocs[i];
+          const entry = songEntries[i];
+          progressText.innerText = `Merging score (${i + 1}/${loadedPdfDocs.length}): ${entry.title}...`;
+
+          for (let pageIdx = 0; pageIdx < item.pageCount; pageIdx++) {
+            const embeddedPage = await mergedPdf.embedPage(item.srcDoc.getPage(pageIdx));
+            const { width, height } = embeddedPage;
+            const newPage = mergedPdf.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
+
+            const margin = 28;
+            const availableWidth = LETTER_WIDTH - (margin * 2);
+            const availableHeight = LETTER_HEIGHT - (margin * 2) - 15;
+
+            const scale = Math.min(availableWidth / width, availableHeight / height, 1);
+            const scaledWidth = width * scale;
+            const scaledHeight = height * scale;
+
+            const xOffset = (LETTER_WIDTH - scaledWidth) / 2;
+            const yOffset = margin + 18 + ((availableHeight - scaledHeight) / 2);
+
+            newPage.drawPage(embeddedPage, { x: xOffset, y: yOffset, width: scaledWidth, height: scaledHeight });
+
+            // GUEST PROTECTION (ALL PAGES FOR NON-SUBSCRIBERS WITH YOUR NEW EMAIL INSTRUCTION)
+            if (!isFullAccess) {
+              const bottomHalfHeight = (availableHeight / 2) + 18;
+
+              newPage.drawRectangle({ x: margin - 6, y: margin + 12, width: LETTER_WIDTH - (margin * 2) + 12, height: bottomHalfHeight, color: rgb(1, 1, 1), opacity: 1.0 });
+              newPage.drawLine({ start: { x: margin - 6, y: margin + 12 + bottomHalfHeight }, end: { x: LETTER_WIDTH - margin + 6, y: margin + 12 + bottomHalfHeight }, thickness: 1.5, color: rgb(0.85, 0.88, 0.92) });
+              newPage.drawRectangle({ x: margin + 15, y: margin + 12 + (bottomHalfHeight / 2) - 42, width: LETTER_WIDTH - (margin * 2) - 30, height: 84, color: rgb(0.97, 0.98, 1.0), borderColor: rgb(0.8, 0.83, 0.9), borderWidth: 1.2 });
+
+              if (pageIdx === 0) {
+                const subWord = "SUBSCRIBE";
+                const subPre = "PLEASE ";
+                const subPost = " TO UNLOCK ALL COMPLETE PAGES";
+
+                const wPre = fontBold.widthOfTextAtSize(subPre, 11);
+                const wSub = fontBold.widthOfTextAtSize(subWord, 13);
+                const wPost = fontBold.widthOfTextAtSize(subPost, 11);
+                const totalW = wPre + wSub + wPost;
+                const startX = (LETTER_WIDTH - totalW) / 2;
+                const bannerY = margin + 12 + (bottomHalfHeight / 2) + 16;
+
+                newPage.drawText(subPre, { x: startX, y: bannerY, size: 11, font: fontBold, color: rgb(0.15, 0.18, 0.25) });
+                newPage.drawText(subWord, { x: startX + wPre, y: bannerY - 0.5, size: 13, font: fontBold, color: rgb(0.85, 0.15, 0.15) });
+                newPage.drawText(subPost, { x: startX + wPre + wSub, y: bannerY, size: 11, font: fontBold, color: rgb(0.15, 0.18, 0.25) });
+
+                const msg1 = "send message to popularpianopieces@gmail.com if you want to avail a 30-song songbook";
+                const msg2 = "payment details will be provided";
+                const wMsg1 = fontRegular.widthOfTextAtSize(msg1, 8.5);
+                const wMsg2 = fontBold.widthOfTextAtSize(msg2, 8.5);
+
+                newPage.drawText(msg1, { x: (LETTER_WIDTH - wMsg1) / 2, y: bannerY - 16, size: 8.5, font: fontRegular, color: rgb(0.25, 0.3, 0.38) });
+                newPage.drawText(msg2, { x: (LETTER_WIDTH - wMsg2) / 2, y: bannerY - 28, size: 8.5, font: fontBold, color: rgb(0.2, 0.45, 0.85) });
+              } else {
+                const blockNotice1 = "Send message to popularpianopieces@gmail.com";
+                const blockNotice2 = "to avail a 30-song songbook • Payment details will be provided";
+                const text1W = fontBold.widthOfTextAtSize(blockNotice1, 10);
+                const text2W = fontRegular.widthOfTextAtSize(blockNotice2, 8.5);
+
+                newPage.drawText(blockNotice1, { x: (LETTER_WIDTH - text1W) / 2, y: margin + 12 + (bottomHalfHeight / 2) + 8, size: 10, font: fontBold, color: rgb(0.8, 0.2, 0.2) });
+                newPage.drawText(blockNotice2, { x: (LETTER_WIDTH - text2W) / 2, y: margin + 12 + (bottomHalfHeight / 2) - 8, size: 8.5, font: fontRegular, color: rgb(0.35, 0.4, 0.45) });
+              }
+
+              newPage.drawText("PREVIEW ONLY • SUBSCRIBE TO PRINT", { x: 100, y: 540, size: 20, font: fontBold, color: rgb(0.85, 0.25, 0.25), rotate: degrees(28), opacity: 0.28 });
+            }
+
+            newPage.drawText(entry.title, { x: margin, y: 20, size: 8, font: fontBold, color: rgb(0.35, 0.4, 0.45) });
+            const pageFooterText = `Page ${docPageCounter} of ${totalDocumentPages}`;
+            const textWidth = fontRegular.widthOfTextAtSize(pageFooterText, 8);
+            newPage.drawText(pageFooterText, { x: LETTER_WIDTH - margin - textWidth, y: 20, size: 8, font: fontRegular, color: rgb(0.35, 0.4, 0.45) });
+
+            docPageCounter++;
+          }
+        }
+
+        progressText.innerText = "Finalizing PDF file...";
+        const pdfBytes = await mergedPdf.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        const now = new Date();
+        const dateCode = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+        const cleanFilename = `Custom Piano Songbook ${dateCode}.pdf`;
+
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.target = '_blank';
+
+        if (isFullAccess) {
+          a.download = cleanFilename;
+          progressText.innerText = `Downloaded ${chosenFiles.length} arrangements (${totalDocumentPages} pages).`;
+        } else {
+          a.download = `Preview ${cleanFilename}`;
+          progressText.innerHTML = `Songbook preview ready! If not downloaded automatically, <a href="${blobUrl}" target="_blank" class="text-emerald-400 underline font-bold">click here to view PDF</a>.`;
+        }
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setTimeout(() => closeSongbookModal(), 3200);
+
+      } catch (err) {
+        console.error(err);
+        alert(`Error generating songbook: ${err.message}`);
+        progressText.innerText = `Compilation error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHTML;
+        lucide.createIcons();
+      }
+    }
+
     function openBundleModal() {
       const modal = document.getElementById('bundleModal');
       document.getElementById('bundleFilterInput').value = '';
@@ -632,36 +802,23 @@
       modal.classList.remove('hidden');
       document.getElementById('bundleFilterInput').focus();
     }
-
-    function closeBundleModal() {
-      document.getElementById('bundleModal').classList.add('hidden');
-    }
+    function closeBundleModal() { document.getElementById('bundleModal').classList.add('hidden'); }
 
     function renderBundleCards() {
       const container = document.getElementById('bundleListGrid');
       const filter = document.getElementById('bundleFilterInput').value.trim().toLowerCase();
-      
       let list = BUNDLE_DATA;
       if (filter) {
-        list = list.filter(b => 
-          b.title.toLowerCase().includes(filter) || 
-          b.subtitle.toLowerCase().includes(filter) ||
-          (b.category && b.category.toLowerCase().includes(filter))
-        );
+        list = list.filter(b => b.title.toLowerCase().includes(filter) || b.subtitle.toLowerCase().includes(filter) || (b.category && b.category.toLowerCase().includes(filter)));
       }
-
       if (list.length === 0) {
         container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400">No bundles found matching "${sanitizeText(filter)}".</div>`;
         return;
       }
-
       container.innerHTML = list.map(bundle => {
         const isHighlighted = bundle.highlight;
         const cardBorder = isHighlighted ? 'border-amber-400/80 bg-slate-900/95 shadow-md shadow-amber-500/10' : 'border-slate-700/80 bg-slate-900/90 hover:border-amber-500/50';
-        const tagBadge = isHighlighted 
-          ? `<span class="text-[10px] text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/40 font-bold">Featured</span>` 
-          : `<span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700">Ko-fi Link</span>`;
-
+        const tagBadge = isHighlighted ? `<span class="text-[10px] text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/40 font-bold">Featured</span>` : `<span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700">Ko-fi Link</span>`;
         return `
           <div class="border ${cardBorder} rounded-xl p-3.5 flex flex-col justify-between transition-all">
             <div>
@@ -675,19 +832,13 @@
               <h4 class="text-sm font-bold text-white leading-tight">${sanitizeText(bundle.title)}</h4>
               <p class="text-xs text-slate-400 mt-1 leading-snug">${sanitizeText(bundle.subtitle)}</p>
             </div>
-            <a 
-              href="${bundle.kofiUrl}" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="mt-3.5 w-full py-2 px-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all text-center"
-            >
+            <a href="${bundle.kofiUrl}" target="_blank" rel="noopener noreferrer" class="mt-3.5 w-full py-2 px-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all text-center">
               <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
               <span>Avail on Ko-fi</span>
             </a>
           </div>
         `;
       }).join('');
-
       lucide.createIcons();
     }
 
@@ -713,34 +864,23 @@
       img.src = imageUrl;
 
       if (opmBadge) {
-        if (isOPM) {
-          opmBadge.classList.remove('hidden');
-        } else {
-          opmBadge.classList.add('hidden');
-        }
+        if (isOPM) opmBadge.classList.remove('hidden');
+        else opmBadge.classList.add('hidden');
       }
-
-      if (subtitle) {
-        subtitle.innerText = "First Page Preview Only";
-      }
-
+      if (subtitle) subtitle.innerText = "First Page Preview Only";
       modal.classList.remove('hidden');
     }
 
-    function closeFirstPageModal() {
-      document.getElementById('firstPageModal').classList.add('hidden');
-    }
+    function closeFirstPageModal() { document.getElementById('firstPageModal').classList.add('hidden'); }
 
     function attemptDownload(event, fileId, fileName) {
       const decodedTitle = decodeURIComponent(fileName || "");
       const isFreeSheet = decodedTitle.toUpperCase().includes("FREE");
-
       if (!isFullAccess && !isFreeSheet) {
         if (event) event.preventDefault();
         window.open(FB_SUBSCRIPTION_URL, '_blank');
         return false;
       }
-
       trackDownload(fileId, fileName);
       return true;
     }
@@ -748,9 +888,7 @@
     function trackDownload(fileId, fileName) {
       const savedEmail = localStorage.getItem('user_buyer_email');
       const userType = isFullAccess && savedEmail ? `Member (${savedEmail})` : "Guest";
-      
       const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=${encodeURIComponent(fileId)}&fileName=${encodeURIComponent(fileName)}&userType=${encodeURIComponent(userType)}&email=${encodeURIComponent(savedEmail || '')}&t=${Date.now()}`;
-      
       const img = new Image();
       img.src = logUrl;
     }
@@ -792,13 +930,13 @@
           localStorage.removeItem('user_buyer_email');
           localStorage.removeItem('user_member_status');
           updateStatusUI(cleanEmail);
-
           if (!isAutoLogin) {
             errorDiv.innerText = `Your access ended on ${data.endDate || 'the scheduled date'}. Please renew your subscription on Meta to access.`;
             errorDiv.classList.remove('hidden');
           }
           renderSheets(getFilteredFiles());
           renderNewUploadsList();
+          updateSongbookModalStatusUI();
           return;
         }
 
@@ -807,11 +945,11 @@
           userMembershipStatus = "active";
           localStorage.setItem('user_buyer_email', cleanEmail);
           localStorage.setItem('user_member_status', 'active');
-
           updateStatusUI(cleanEmail);
           if (!isAutoLogin) closeModal();
           renderSheets(getFilteredFiles());
           renderNewUploadsList();
+          updateSongbookModalStatusUI();
         } else {
           if (!isAutoLogin) {
             errorDiv.innerText = "Email not found in verified subscriber records. Please check spelling or subscribe on Meta.";
@@ -837,7 +975,6 @@
     function checkSavedLogin() {
       const savedEmail = localStorage.getItem('user_buyer_email');
       const savedStatus = localStorage.getItem('user_member_status');
-
       if (savedStatus) userMembershipStatus = savedStatus;
       if (savedEmail) verifyBuyerEmail(savedEmail, true);
     }
@@ -883,16 +1020,13 @@
     async function scanFolderDeep(folderId, isParentOpm = false) {
       let results = [];
       let pageToken = null;
-
       do {
         const query = `'${folderId}' in parents and trashed = false`;
         let url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&pageSize=100&fields=nextPageToken,files(id,name,webViewLink,mimeType,thumbnailLink,createdTime)&key=${API_KEY}`;
         if (pageToken) url += `&pageToken=${pageToken}`;
-
         const res = await fetch(url);
         const data = await res.json();
         if (data.error) throw new Error(data.error.message);
-
         const items = data.files || [];
         for (const item of items) {
           if (item.mimeType === 'application/vnd.google-apps.folder') {
@@ -906,7 +1040,6 @@
         }
         pageToken = data.nextPageToken;
       } while (pageToken);
-
       return results;
     }
 
@@ -914,33 +1047,23 @@
       const count = allFiles.length;
       const countEl = document.getElementById('sheetCountNumber');
       const containerEl = document.getElementById('dynamicSheetCount');
-      const modalCountEl = document.getElementById('modalDynamicSheetCount');
-
       if (countEl && containerEl) {
         countEl.innerText = count.toLocaleString();
         containerEl.classList.remove('hidden');
-      }
-      if (modalCountEl) {
-        modalCountEl.innerText = `${count.toLocaleString()}+`;
       }
     }
 
     function setupRecentUploads() {
       const badge = document.getElementById('newUploadsCountBadge');
       const seventyTwoHoursAgo = Date.now() - (72 * 60 * 60 * 1000);
-
       recentFilesList = allFiles.filter(file => {
         if (!file.createdTime) return false;
         return new Date(file.createdTime).getTime() >= seventyTwoHoursAgo;
       }).sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
 
       if (recentFilesList.length === 0 && allFiles.length > 0) {
-        recentFilesList = [...allFiles]
-          .filter(f => f.createdTime)
-          .sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime))
-          .slice(0, 20);
+        recentFilesList = [...allFiles].filter(f => f.createdTime).sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime)).slice(0, 20);
       }
-
       if (badge && recentFilesList.length > 0) {
         badge.innerText = recentFilesList.length;
         badge.classList.remove('hidden');
@@ -954,19 +1077,13 @@
       modal.classList.remove('hidden');
       document.getElementById('newUploadsFilterInput').focus();
     }
-
-    function closeNewUploadsModal() {
-      document.getElementById('newUploadsModal').classList.add('hidden');
-    }
+    function closeNewUploadsModal() { document.getElementById('newUploadsModal').classList.add('hidden'); }
 
     function renderNewUploadsList() {
       const container = document.getElementById('newUploadsList');
       const filter = document.getElementById('newUploadsFilterInput').value.trim().toLowerCase();
-      
       let list = recentFilesList.length > 0 ? recentFilesList : allFiles.slice(0, 25);
-      if (filter) {
-        list = list.filter(f => f.name.toLowerCase().includes(filter));
-      }
+      if (filter) list = list.filter(f => f.name.toLowerCase().includes(filter));
 
       if (list.length === 0) {
         container.innerHTML = `<div class="py-8 text-center text-xs text-slate-400">No sheet music uploads found from the last 72 hours matching "${sanitizeText(filter)}".</div>`;
@@ -979,7 +1096,6 @@
         const isAllowed = isFullAccess || isFree;
         const safeUrl = getSafeDownloadUrl(file.id);
         const clearPreviewUrl = getFirstPagePreviewUrl(file);
-
         let dateLabel = "";
         if (file.createdTime) {
           const d = new Date(file.createdTime);
@@ -990,108 +1106,45 @@
           <div class="py-3 px-3.5 flex items-center justify-between gap-3.5 hover:bg-slate-700/30 rounded-xl transition-all border border-slate-700/50 bg-slate-900/50">
             <div class="flex items-center gap-3.5 min-w-0">
               <span class="text-[11px] font-mono text-slate-500 w-4 text-right shrink-0">${index + 1}.</span>
-              
-              <div 
-                onclick="openFirstPageModal('${clearPreviewUrl}', '${encodeURIComponent(title)}', ${file.isOPM ? 'true' : 'false'})"
-                class="relative w-14 sm:w-16 aspect-[3/4] rounded-lg overflow-hidden bg-slate-950 border border-slate-700/80 shadow cursor-pointer group shrink-0 flex items-center justify-center"
-                title="Click to view first page clearly"
-              >
-                <img 
-                  src="${clearPreviewUrl}" 
-                  alt="${sanitizeText(title)}" 
-                  class="w-full h-full object-cover object-top transition-transform duration-200 group-hover:scale-105" 
-                  loading="lazy" 
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                />
-                <div class="w-full h-full hidden flex-col items-center justify-center text-slate-500 bg-slate-950">
-                  <i data-lucide="file-text" class="w-5 h-5 stroke-1"></i>
-                  <span class="text-[9px] mt-0.5">Page 1</span>
-                </div>
-
-                <div class="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <i data-lucide="zoom-in" class="w-4 h-4 text-white"></i>
-                </div>
+              <div onclick="openFirstPageModal('${clearPreviewUrl}', '${encodeURIComponent(title)}', ${file.isOPM ? 'true' : 'false'})" class="relative w-14 sm:w-16 aspect-[3/4] rounded-lg overflow-hidden bg-slate-950 border border-slate-700/80 shadow cursor-pointer group shrink-0 flex items-center justify-center" title="Click to view first page clearly">
+                <img src="${clearPreviewUrl}" alt="${sanitizeText(title)}" class="w-full h-full object-cover object-top transition-transform duration-200 group-hover:scale-105" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+                <div class="w-full h-full hidden flex-col items-center justify-center text-slate-500 bg-slate-950"><i data-lucide="file-text" class="w-5 h-5 stroke-1"></i><span class="text-[9px] mt-0.5">Page 1</span></div>
+                <div class="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="zoom-in" class="w-4 h-4 text-white"></i></div>
               </div>
-
               <div class="min-w-0">
-                <p class="text-slate-100 font-semibold truncate text-xs sm:text-sm leading-snug" title="${sanitizeText(file.name)}">
-                  ${sanitizeText(title)}
-                </p>
+                <p class="text-slate-100 font-semibold truncate text-xs sm:text-sm leading-snug" title="${sanitizeText(file.name)}">${sanitizeText(title)}</p>
                 <div class="flex flex-wrap items-center gap-2 mt-1">
-                  ${file.isOPM ? `
-                    <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30">OPM</span>
-                  ` : ''}
-                  ${isAllowed ? `
-                    <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-sm ${isFree ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'}">
-                      <i data-lucide="check" class="w-3.5 h-3.5"></i>
-                      ${isFree ? 'Free Sample' : 'Unlocked'}
-                    </span>
-                  ` : `
-                    <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm">
-                      <i data-lucide="lock" class="w-3.5 h-3.5 fill-amber-300"></i>
-                      Subscribers
-                    </span>
-                  `}
+                  ${file.isOPM ? `<span class="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30">OPM</span>` : ''}
+                  ${isAllowed ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow-sm ${isFree ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'}"><i data-lucide="check" class="w-3.5 h-3.5"></i>${isFree ? 'Free Sample' : 'Unlocked'}</span>` : `<span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm"><i data-lucide="lock" class="w-3.5 h-3.5 fill-amber-300"></i>Subscribers</span>`}
                   ${dateLabel ? `<span class="text-[11px] text-slate-400">Added: ${dateLabel}</span>` : ''}
                 </div>
               </div>
             </div>
-            
             <div class="flex items-center gap-2 shrink-0">
-              ${isAllowed ? `
-                <a 
-                  href="${file.webViewLink}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="p-2 bg-slate-700/80 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors border border-slate-600/50" 
-                  title="View Full Score in New Tab"
-                >
-                  <i data-lucide="eye" class="w-4 h-4"></i>
-                </a>
-                <a 
-                  href="${safeUrl}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')"
-                  class="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-lg transition-colors shadow-sm" 
-                  title="Immediate Download"
-                >
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download</span>
-                </a>
-              ` : `
-                <a 
-                  href="${FB_SUBSCRIPTION_URL}" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs rounded-lg shadow-md transition-all cursor-pointer active:scale-95" 
-                  title="Subscribe to Meta"
-                >
-                  <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
-                  <span>Subscribe to Meta</span>
-                </a>
-              `}
+              ${isAllowed ? `<a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-700/80 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors border border-slate-600/50" title="View Full Score in New Tab"><i data-lucide="eye" class="w-4 h-4"></i></a><a href="${safeUrl}" target="_blank" rel="noopener noreferrer" onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')" class="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-lg transition-colors shadow-sm" title="Immediate Download"><i data-lucide="download" class="w-3.5 h-3.5"></i><span>Download</span></a>` : `<a href="${FB_SUBSCRIPTION_URL}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs rounded-lg shadow-md transition-all cursor-pointer active:scale-95" title="Subscribe to Meta"><i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i><span>Subscribe to Meta</span></a>`}
             </div>
           </div>
         `;
       }).join('');
-
       lucide.createIcons();
     }
 
     function getFilteredFiles() {
-      const term = document.getElementById('searchInput').value.trim().toLowerCase();
+      const rawTerm = document.getElementById('searchInput').value;
+      const term = rawTerm ? rawTerm.trim().toLowerCase() : "";
       let list = allFiles;
 
       if (term) {
-        if (term === 'opm') {
-          list = list.filter(f => f.isOPM || f.name.toLowerCase().includes('opm'));
+        const isOpmSearch = (term === 'opm') || term.includes('opm');
+        if (isOpmSearch) {
+          list = list.filter(f => f.isOPM || (f.name && f.name.toLowerCase().includes('opm')));
         } else {
-          list = list.filter(f => f.name.toLowerCase().includes(term));
+          list = list.filter(f => f.name && f.name.toLowerCase().includes(term));
         }
       }
 
-      if (selectedLetterFilter && selectedLetterFilter !== 'ALL') {
+      const isOpmSearchActive = term && ((term === 'opm') || term.includes('opm'));
+      if (!isOpmSearchActive && selectedLetterFilter && selectedLetterFilter !== 'ALL') {
         if (selectedLetterFilter === 'OPM') {
           list = list.filter(f => f.isOPM === true);
         } else if (selectedLetterFilter === '#') {
@@ -1109,13 +1162,9 @@
 
       const freeFiles = [];
       const lockedFiles = [];
-
       list.forEach(file => {
-        if (file.name.toUpperCase().includes("FREE")) {
-          freeFiles.push(file);
-        } else {
-          lockedFiles.push(file);
-        }
+        if (file.name.toUpperCase().includes("FREE")) freeFiles.push(file);
+        else lockedFiles.push(file);
       });
 
       const alphabetSort = (a, b) => {
@@ -1123,23 +1172,16 @@
         const nameB = b.name.replace(/\.[^/.]+$/, "").toLowerCase();
         return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
       };
-
       freeFiles.sort(alphabetSort);
       lockedFiles.sort(alphabetSort);
 
       const result = [];
       let freeIdx = 0;
       let lockedIdx = 0;
-
       while (freeIdx < freeFiles.length || lockedIdx < lockedFiles.length) {
-        for (let i = 0; i < 4 && freeIdx < freeFiles.length; i++) {
-          result.push(freeFiles[freeIdx++]);
-        }
-        for (let i = 0; i < 96 && lockedIdx < lockedFiles.length; i++) {
-          result.push(lockedFiles[lockedIdx++]);
-        }
+        for (let i = 0; i < 4 && freeIdx < freeFiles.length; i++) result.push(freeFiles[freeIdx++]);
+        for (let i = 0; i < 96 && lockedIdx < lockedFiles.length; i++) result.push(lockedFiles[lockedIdx++]);
       }
-
       return result;
     }
 
@@ -1183,82 +1225,23 @@
 
         card.innerHTML = `
           <div>
-            <div 
-              onclick="openFirstPageModal('${clearPreviewUrl}', '${encodeURIComponent(title)}', ${file.isOPM ? 'true' : 'false'})"
-              class="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-slate-950 mb-3 border border-slate-700/50 shadow-inner flex items-center justify-center cursor-pointer group"
-              title="Click to view first page preview"
-            >
-              <img 
-                src="${clearPreviewUrl}" 
-                alt="${sanitizeText(title)}" 
-                class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" 
-                loading="lazy" 
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-              />
-              <div class="w-full h-full hidden flex-col items-center justify-center text-slate-500 p-4 bg-slate-950">
-                <i data-lucide="file-text" class="w-10 h-10 mb-2 stroke-1"></i>
-                <span class="text-xs">Sheet Preview</span>
-              </div>
-              
+            <div onclick="openFirstPageModal('${clearPreviewUrl}', '${encodeURIComponent(title)}', ${file.isOPM ? 'true' : 'false'})" class="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-slate-950 mb-3 border border-slate-700/50 shadow-inner flex items-center justify-center cursor-pointer group" title="Click to view first page preview">
+              <img src="${clearPreviewUrl}" alt="${sanitizeText(title)}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+              <div class="w-full h-full hidden flex-col items-center justify-center text-slate-500 p-4 bg-slate-950"><i data-lucide="file-text" class="w-10 h-10 mb-2 stroke-1"></i><span class="text-xs">Sheet Preview</span></div>
               <div class="absolute top-2 right-2 flex items-center gap-1.5" onclick="event.stopPropagation()">
-                <button 
-                  onclick="copySongLink('${title.replace(/'/g, "\\'")}', this)" 
-                  class="p-1 bg-slate-900/80 hover:bg-slate-950 text-slate-300 hover:text-white rounded-md backdrop-blur border border-slate-700/60 transition-colors shadow"
-                  title="Copy direct link to this song"
-                >
-                  <i data-lucide="share-2" class="w-3 h-3"></i>
-                </button>
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow flex items-center gap-1 ${isAllowed ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'}">
-                  <i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3.5 h-3.5"></i>
-                  ${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Subscribers'}
-                </span>
+                <button onclick="copySongLink('${title.replace(/'/g, "\\'")}', this)" class="p-1 bg-slate-900/80 hover:bg-slate-950 text-slate-300 hover:text-white rounded-md backdrop-blur border border-slate-700/60 transition-colors shadow" title="Copy direct link to this song"><i data-lucide="share-2" class="w-3 h-3"></i></button>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow flex items-center gap-1 ${isAllowed ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'}"><i data-lucide="${isAllowed ? 'check' : 'lock'}" class="w-3.5 h-3.5"></i>${isAllowed ? (isFree ? 'Free' : 'Unlocked') : 'Subscribers'}</span>
               </div>
-
-              ${file.isOPM ? `
-                <div class="absolute bottom-2 left-2">
-                  <span class="bg-amber-500/90 text-slate-950 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded shadow">OPM</span>
-                </div>
-              ` : ''}
+              ${file.isOPM ? `<div class="absolute bottom-2 left-2"><span class="bg-amber-500/90 text-slate-950 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded shadow">OPM</span></div>` : ''}
             </div>
-            <h2 class="font-semibold text-slate-100 text-sm leading-snug line-clamp-2 mb-3" title="${sanitizeText(file.name)}">
-              ${sanitizeText(title)}
-            </h2>
+            <h2 class="font-semibold text-slate-100 text-sm leading-snug line-clamp-2 mb-3" title="${sanitizeText(file.name)}">${sanitizeText(title)}</h2>
           </div>
-
           <div class="pt-2 border-t border-slate-700/50">
-            ${isAllowed ? `
-              <div class="grid grid-cols-2 gap-2">
-                <a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium rounded-lg transition-colors">
-                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                  <span>View</span>
-                </a>
-                <a 
-                  href="${safeUrl}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')"
-                  class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors shadow-sm"
-                >
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download</span>
-                </a>
-              </div>
-            ` : `
-              <a 
-                href="${FB_SUBSCRIPTION_URL}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="w-full py-2 px-3 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95"
-              >
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i>
-                <span>Subscribe to Meta</span>
-              </a>
-            `}
+            ${isAllowed ? `<div class="grid grid-cols-2 gap-2"><a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium rounded-lg transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i><span>View</span></a><a href="${safeUrl}" target="_blank" rel="noopener noreferrer" onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors shadow-sm"><i data-lucide="download" class="w-3.5 h-3.5"></i><span>Download</span></a></div>` : `<a href="${FB_SUBSCRIPTION_URL}" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95"><i data-lucide="sparkles" class="w-3.5 h-3.5 fill-slate-950"></i><span>Subscribe to Meta</span></a>`}
           </div>
         `;
         grid.appendChild(card);
       });
-
       lucide.createIcons();
     }
 
@@ -1270,10 +1253,7 @@
       modal.classList.remove('hidden');
       document.getElementById('tocFilterInput').focus();
     }
-
-    function closeTocModal() {
-      document.getElementById('tocModal').classList.add('hidden');
-    }
+    function closeTocModal() { document.getElementById('tocModal').classList.add('hidden'); }
 
     function renderTocList() {
       const container = document.getElementById('tocList');
@@ -1291,50 +1271,21 @@
         const isFree = file.name.toUpperCase().includes("FREE");
         const isAllowed = isFullAccess || isFree;
         const safeUrl = getSafeDownloadUrl(file.id);
-
         return `
           <div class="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-slate-700/40 rounded-lg transition-colors">
             <div class="flex items-center gap-3 min-w-0">
               <span class="text-[11px] font-mono text-slate-500 w-6 text-right shrink-0">${index + 1}.</span>
               <div class="truncate flex items-center gap-1.5">
                 ${file.isOPM ? `<span class="bg-amber-500/20 text-amber-300 text-[9px] font-bold px-1.5 py-0.2 rounded border border-amber-500/30">OPM</span>` : ''}
-                <span class="text-slate-200 font-medium truncate text-xs sm:text-sm" title="${sanitizeText(file.name)}">
-                  ${sanitizeText(title)}
-                </span>
+                <span class="text-slate-200 font-medium truncate text-xs sm:text-sm" title="${sanitizeText(file.name)}">${sanitizeText(title)}</span>
               </div>
             </div>
-            
             <div class="flex items-center gap-2 shrink-0">
-              ${isAllowed ? `
-                <a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition-colors" title="View Preview">
-                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                </a>
-                <a 
-                  href="${safeUrl}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')"
-                  class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm" 
-                  title="Download PDF"
-                >
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                </a>
-              ` : `
-                <a 
-                  href="${FB_SUBSCRIPTION_URL}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="p-1.5 bg-slate-700 hover:bg-slate-600 text-amber-400 rounded-md transition-colors" 
-                  title="Subscribe to Meta"
-                >
-                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                </a>
-              `}
+              ${isAllowed ? `<a href="${file.webViewLink}" target="_blank" rel="noopener noreferrer" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition-colors" title="View Preview"><i data-lucide="eye" class="w-3.5 h-3.5"></i></a><a href="${safeUrl}" target="_blank" rel="noopener noreferrer" onclick="attemptDownload(event, '${file.id}', '${encodeURIComponent(title)}')" class="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors shadow-sm" title="Download PDF"><i data-lucide="download" class="w-3.5 h-3.5"></i></a>` : `<a href="${FB_SUBSCRIPTION_URL}" target="_blank" rel="noopener noreferrer" class="p-1.5 bg-slate-700 hover:bg-slate-600 text-amber-400 rounded-md transition-colors" title="Subscribe to Meta"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i></a>`}
             </div>
           </div>
         `;
       }).join('');
-
       lucide.createIcons();
     }
 
@@ -1343,7 +1294,6 @@
       warmUpAppsScript();
       document.getElementById('emailInput').focus();
     }
-
     function closeModal() {
       document.getElementById('loginModal').classList.add('hidden');
       document.getElementById('loginError').classList.add('hidden');
@@ -1356,6 +1306,7 @@
         if (modalId === 'newUploadsModal') closeNewUploadsModal();
         if (modalId === 'firstPageModal') closeFirstPageModal();
         if (modalId === 'bundleModal') closeBundleModal();
+        if (modalId === 'songbookModal') closeSongbookModal();
       }
     }
 
@@ -1372,12 +1323,9 @@
       localStorage.removeItem('user_member_status');
       updateStatusUI('');
       renderSheets(getFilteredFiles());
-      if (!document.getElementById('tocModal').classList.contains('hidden')) {
-        renderTocList();
-      }
-      if (!document.getElementById('newUploadsModal').classList.contains('hidden')) {
-        renderNewUploadsList();
-      }
+      if (!document.getElementById('tocModal').classList.contains('hidden')) renderTocList();
+      if (!document.getElementById('newUploadsModal').classList.contains('hidden')) renderNewUploadsList();
+      updateSongbookModalStatusUI();
     }
 
     document.addEventListener('keydown', (e) => {
@@ -1387,6 +1335,7 @@
         closeNewUploadsModal();
         closeFirstPageModal();
         closeBundleModal();
+        closeSongbookModal();
       }
     });
 
@@ -1411,6 +1360,7 @@
       const alphabetFilterContainer = document.getElementById('alphabetFilterContainer');
       const mobileUnlockTriggerBtn = document.getElementById('mobileUnlockTriggerBtn');
       const guestStickyBar = document.getElementById('guestStickyBar');
+      const createSongbookBtn = document.getElementById('createSongbookBtn');
 
       try {
         allFiles = await scanFolderDeep(FOLDER_ID);
@@ -1421,20 +1371,18 @@
         }
 
         updateDynamicCounts();
-        
-        // Hide loading indicator
         statusMessage.classList.add('hidden');
-        
-        // Reveal search box, header buttons, alphabet strip, and sheets grid
         headerActionsContainer.classList.remove('hidden');
         headerActionsContainer.classList.add('flex');
-        
         alphabetFilterContainer.classList.remove('hidden');
         alphabetFilterContainer.classList.add('flex');
-        
         sheetsGrid.classList.remove('hidden');
 
-        // Reveal mobile buttons if guest
+        if (createSongbookBtn) {
+          createSongbookBtn.classList.remove('hidden');
+          createSongbookBtn.classList.add('inline-flex');
+        }
+
         if (!isFullAccess) {
           if (mobileUnlockTriggerBtn) mobileUnlockTriggerBtn.classList.remove('hidden');
           if (guestStickyBar) {
