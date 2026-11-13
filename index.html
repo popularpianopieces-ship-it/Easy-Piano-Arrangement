@@ -626,6 +626,15 @@
           throw new Error("Could not retrieve PDF data for the selected items.");
         }
 
+        // Track Songbook Compilation directly into 5th column as "songbook / title"
+        const selectedSongTitles = chosenFiles.map(f => f.name.replace(/\.[^/.]+$/, "")).join(" | ");
+        const songbookFileName = "songbook / " + selectedSongTitles;
+        const savedEmail = localStorage.getItem('user_buyer_email');
+        const userType = isFullAccess && savedEmail ? `Member (${savedEmail})` : "Guest";
+        const logUrl = `${APPS_SCRIPT_URL}?action=log_download&fileId=SONGBOOK_BUNDLE&fileName=${encodeURIComponent(songbookFileName)}&userType=${encodeURIComponent(userType)}&email=${encodeURIComponent(savedEmail || '')}&t=${Date.now()}`;
+        const trackingImg = new Image();
+        trackingImg.src = logUrl;
+
         const ITEMS_PER_TOC_PAGE = 16;
         const tocPageCount = Math.ceil(songEntries.length / ITEMS_PER_TOC_PAGE) || 1;
         let runningPageNumber = tocPageCount + 1;
@@ -636,7 +645,6 @@
         });
 
         const totalDocumentPages = runningPageNumber - 1;
-        const savedEmail = localStorage.getItem('user_buyer_email');
         const belongsToText = (isFullAccess && savedEmail) ? `This belongs to : ${savedEmail}` : `This belongs to : Guest`;
 
         for (let tocIndex = 0; tocIndex < tocPageCount; tocIndex++) {
@@ -704,7 +712,7 @@
 
             newPage.drawPage(embeddedPage, { x: xOffset, y: yOffset, width: scaledWidth, height: scaledHeight });
 
-            // GUEST PROTECTION (ALL PAGES FOR NON-SUBSCRIBERS WITH YOUR NEW EMAIL INSTRUCTION)
+            // GUEST PROTECTION (ALL PAGES FOR NON-SUBSCRIBERS)
             if (!isFullAccess) {
               const bottomHalfHeight = (availableHeight / 2) + 18;
 
