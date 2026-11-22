@@ -325,24 +325,61 @@
     </div>
   </div>
 
-  <!-- Bundle Modal -->
+  <!-- Bundle Modal (6 Months vs Lifetime Access Only) -->
   <div id="bundleModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="handleBackdropClick(event, 'bundleModal')">
-    <div class="bg-slate-800 border border-amber-500/40 rounded-2xl p-5 sm:p-6 w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl relative">
-      <div class="flex items-center justify-between pb-3.5 border-b border-slate-700/80 mb-4 shrink-0">
+    <div class="bg-slate-800 border border-amber-500/40 rounded-2xl p-5 sm:p-6 w-full max-w-2xl shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-700/80 mb-4">
         <div class="flex items-center gap-2.5">
           <div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg border border-amber-500/30"><i data-lucide="package-open" class="w-5 h-5"></i></div>
           <div>
-            <h3 class="text-base sm:text-lg font-bold text-white leading-tight">Choose Your Sheet Music Bundle</h3>
-            <p class="text-xs text-slate-400">Download complete artist & collection bundles directly on Ko-fi</p>
+            <h3 class="text-base sm:text-lg font-bold text-white leading-tight">Avail Bundle Access</h3>
+            <p class="text-xs text-slate-400">Would you like 6 Months Access or Lifetime Access?</p>
           </div>
         </div>
         <button onclick="closeBundleModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <div class="relative mb-3.5 shrink-0">
-        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        <input type="text" id="bundleFilterInput" placeholder="Filter bundles..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500" oninput="renderBundleCards()"/>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a 
+          href="https://ko-fi.com/s/4da63edf55" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="p-4 rounded-xl border border-indigo-400/60 bg-slate-900/95 hover:bg-slate-950 hover:border-indigo-300 transition-all shadow-md flex flex-col justify-between group"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-indigo-300 bg-indigo-500/20 border border-indigo-400/30 px-2 py-0.5 rounded-full">Option 1</span>
+              <span class="text-[11px] font-bold text-indigo-300">6 Months</span>
+            </div>
+            <h4 class="text-base font-bold text-white group-hover:text-indigo-200 transition-colors">6 Months Access</h4>
+            <p class="text-xs text-slate-400 mt-1">Get 6 months of access to the piano sheet music bundle on Ko-fi.</p>
+          </div>
+          <div class="mt-4 w-full py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-1.5 transition-all">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>6 Months Access</span>
+          </div>
+        </a>
+
+        <a 
+          href="https://ko-fi.com/s/a39b033712" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="p-4 rounded-xl border border-amber-400/80 bg-slate-900/95 hover:bg-slate-950 hover:border-amber-300 transition-all shadow-md shadow-amber-500/10 flex flex-col justify-between group"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 px-2 py-0.5 rounded-full">Option 2</span>
+              <span class="text-[11px] font-bold text-amber-300">Lifetime</span>
+            </div>
+            <h4 class="text-base font-bold text-white group-hover:text-amber-200 transition-colors">Lifetime Access</h4>
+            <p class="text-xs text-slate-400 mt-1">Get one-time lifetime access to the piano sheet music bundle on Ko-fi.</p>
+          </div>
+          <div class="mt-4 w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-1.5 transition-all">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>Lifetime Access</span>
+          </div>
+        </a>
       </div>
-      <div id="bundleListGrid" class="overflow-y-auto max-h-[58vh] custom-scrollbar grid grid-cols-1 sm:grid-cols-2 gap-3 pr-1"></div>
     </div>
   </div>
 
@@ -416,20 +453,6 @@
     const FOLDER_ID = "1qdFCHX-JS7PqbT0c1Q0pKKnlrsY5UfJb";
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC63XU970BnSxqiVcSORO9O5cSJ1dyqsv4Jps2uffC9THoApU-PdKNeVj4mwi-fLzR/exec";
     const MAX_SONGBOOK_SONGS = 30;
-
-    const BUNDLE_DATA = [
-      { id: "all-star-easy-selection", title: "All-Star Easy Selection Bundle", subtitle: "Hand-picked easy piano arrangements of greatest hits", icon: "star", category: "Pop Collection", highlight: true, kofiUrl: "https://ko-fi.com/s/adb465cdf3" },
-      { id: "piano-sheet-library-collection", title: "Piano Sheet Library Collection", subtitle: "Complete library bundle with instant access to all arrangements", icon: "library", category: "Complete Collection", highlight: true, kofiUrl: "https://ko-fi.com/s/a39b033712" },
-      { id: "all-lovesongs", title: "All Lovesongs", subtitle: "Romance, ballads & timeless love themes", icon: "heart", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/69aeb59390" },
-      { id: "abba", title: "ABBA", subtitle: "Dancing Queen, Mamma Mia, and timeless classics", icon: "disc", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/cba7efd769" },
-      { id: "carpenters", title: "Carpenters", subtitle: "Complete beloved soft-rock favorites and hits", icon: "music-2", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/b5e789b527" },
-      { id: "carpenters-easy", title: "Carpenters (Easy)", subtitle: "Easy-to-play arrangements of iconic Carpenters songs", icon: "music-2", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/ae1a63ddd8" },
-      { id: "the-beatles", title: "The Beatles", subtitle: "Legendary songs and anthems from the Fab Four", icon: "radio", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/5c03638bee" },
-      { id: "barry-manilow", title: "Barry Manilow", subtitle: "Classic romantic favorites & timeless melodies", icon: "mic", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/b9ed1af11b" },
-      { id: "queen-easy", title: "Queen (Easy)", subtitle: "Easy piano scores of legendary Queen rock hits", icon: "crown", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/deca7bfb71" },
-      { id: "disney-easy", title: "Disney (Easy)", subtitle: "Beloved animated movie soundtracks arranged for easy piano", icon: "sparkles", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/195ee06bcd" },
-      { id: "christmas", title: "Christmas", subtitle: "Holiday carols and festive Christmas music", icon: "gift", category: "Bundle", highlight: false, kofiUrl: "https://ko-fi.com/s/f878d0cd6d" }
-    ];
 
     const genreList = [
       "Easy to Advanced Piano Arrangements", "Old Pop Hits", "Latest Pop Hits",
@@ -849,50 +872,10 @@
 
     function openBundleModal() {
       const modal = document.getElementById('bundleModal');
-      document.getElementById('bundleFilterInput').value = '';
-      renderBundleCards();
       modal.classList.remove('hidden');
-      document.getElementById('bundleFilterInput').focus();
-    }
-    function closeBundleModal() { document.getElementById('bundleModal').classList.add('hidden'); }
-
-    function renderBundleCards() {
-      const container = document.getElementById('bundleListGrid');
-      const filter = document.getElementById('bundleFilterInput').value.trim().toLowerCase();
-      let list = BUNDLE_DATA;
-      if (filter) {
-        list = list.filter(b => b.title.toLowerCase().includes(filter) || b.subtitle.toLowerCase().includes(filter) || (b.category && b.category.toLowerCase().includes(filter)));
-      }
-      if (list.length === 0) {
-        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400">No bundles found matching "${sanitizeText(filter)}".</div>`;
-        return;
-      }
-      container.innerHTML = list.map(bundle => {
-        const isHighlighted = bundle.highlight;
-        const cardBorder = isHighlighted ? 'border-amber-400/80 bg-slate-900/95 shadow-md shadow-amber-500/10' : 'border-slate-700/80 bg-slate-900/90 hover:border-amber-500/50';
-        const tagBadge = isHighlighted ? `<span class="text-[10px] text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/40 font-bold">Featured</span>` : `<span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700">Ko-fi Link</span>`;
-        return `
-          <div class="border ${cardBorder} rounded-xl p-3.5 flex flex-col justify-between transition-all">
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <div class="flex items-center gap-1.5 text-amber-400 font-bold text-xs uppercase tracking-wider">
-                  <i data-lucide="${bundle.icon}" class="w-4 h-4"></i>
-                  <span>${bundle.category || 'Bundle'}</span>
-                </div>
-                ${tagBadge}
-              </div>
-              <h4 class="text-sm font-bold text-white leading-tight">${sanitizeText(bundle.title)}</h4>
-              <p class="text-xs text-slate-400 mt-1 leading-snug">${sanitizeText(bundle.subtitle)}</p>
-            </div>
-            <a href="${bundle.kofiUrl}" target="_blank" rel="noopener noreferrer" class="mt-3.5 w-full py-2 px-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all text-center">
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-              <span>Avail on Ko-fi</span>
-            </a>
-          </div>
-        `;
-      }).join('');
       lucide.createIcons();
     }
+    function closeBundleModal() { document.getElementById('bundleModal').classList.add('hidden'); }
 
     function getFirstPagePreviewUrl(file) {
       if (file.thumbnailLink) {
@@ -929,14 +912,12 @@
       const decodedTitle = decodeURIComponent(fileName || "");
       const isFreeSheet = decodedTitle.toUpperCase().includes("FREE");
 
-      // Non-subscribers directly open the Bundle Modal
       if (!isFullAccess && !isFreeSheet) {
         if (event) event.preventDefault();
         openBundleModal();
         return false;
       }
 
-      // Member download limit check
       if (isFullAccess && !isFreeSheet) {
         if (event) event.preventDefault();
 
@@ -1501,7 +1482,6 @@
           }
         }
 
-        // Renders sheets immediately with Bundle Only buttons
         renderSheets(getFilteredFiles());
         setupRecentUploads();
         lucide.createIcons();
